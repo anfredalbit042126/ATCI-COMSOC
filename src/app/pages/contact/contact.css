@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:host{
+    display:block;
+    background:#F4F8FC;
+    font-family:"Poppins",sans-serif;
+}
+
+/* ============================
+        CONTACT SECTION
+============================ */
+
+.contact{
+    min-height:100vh;
+    padding:90px 10%;
+    background:linear-gradient(135deg,#F4F8FC,#EAF3FF);
+}
+
+.contact-header{
+    text-align:center;
+    margin-bottom:70px;
+}
+
+.subtitle{
+    color:#2563EB;
+    font-size:18px;
+    font-weight:600;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-bottom:15px;
+}
+
+.contact-header h1{
+    font-size:55px;
+    color:#0F172A;
+    margin-bottom:20px;
+}
+
+.contact-header span{
+    color:#06B6D4;
+}
+
+.description{
+    max-width:700px;
+    margin:auto;
+    color:#475569;
+    line-height:1.8;
+    font-size:18px;
+}
+
+/* ============================
+        CONTAINER
+============================ */
+
+.contact-container{
+    display:grid;
+    grid-template-columns:1fr 1.3fr;
+    gap:50px;
+}
+
+/* ============================
+        INFO
+============================ */
+
+.contact-info{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.info-card{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    background:#fff;
+    padding:25px;
+    border-radius:18px;
+    border:1px solid #E2E8F0;
+    box-shadow:0 10px 25px rgba(15,23,42,.06);
+    transition:.3s;
+}
+
+.info-card:hover{
+    transform:translateY(-5px);
+}
+
+.icon{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#2563EB;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+}
+
+.info-card h3{
+    color:#0F172A;
+    margin-bottom:5px;
+}
+
+.info-card p{
+    color:#64748B;
+}
+
+/* ============================
+        FORM
+============================ */
+
+.contact-form{
+    background:#fff;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(15,23,42,.08);
+}
+
+.input-group{
+    margin-bottom:22px;
+}
+
+.input-group input,
+.input-group textarea{
+    width:100%;
+    padding:18px;
+    border:1px solid #CBD5E1;
+    border-radius:12px;
+    outline:none;
+    font-size:16px;
+    font-family:"Poppins",sans-serif;
+    transition:.3s;
+}
+
+.input-group input:focus,
+.input-group textarea:focus{
+    border-color:#2563EB;
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+}
+
+textarea{
+    resize:none;
+}
+
+.btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:50px;
+    background:#2563EB;
+    color:#fff;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn:hover{
+    background:#1D4ED8;
+    transform:translateY(-2px);
+}
+
+/* ============================
+        RESPONSIVE
+============================ */
+
+@media(max-width:900px){
+
+.contact-container{
+    grid-template-columns:1fr;
+}
+
+.contact-header h1{
+    font-size:42px;
+}
+
+}
+
+@media(max-width:600px){
+
+.contact{
+    padding:70px 7%;
+}
+
+.contact-header h1{
+    font-size:34px;
+}
+
+.description{
+    font-size:16px;
+}
+
+.contact-form{
+    padding:25px;
+}
+
+}

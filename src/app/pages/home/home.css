@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:host{
+    display:block;
+    width:100%;
+    background:#F4F8FC;
+    font-family:"Poppins",sans-serif;
+}
+
+/* =========================
+        HERO SECTION
+========================= */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:80px;
+    padding:80px 10%;
+    background:linear-gradient(135deg,#F4F8FC,#EAF3FF);
+}
+
+.hero-content{
+    flex:1;
+}
+
+.hero-subtitle{
+    color:#2563EB;
+    font-size:18px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:4px;
+    margin-bottom:20px;
+}
+
+.hero h2{
+    font-size:56px;
+    line-height:1.1;
+    font-weight:800;
+    color:#0F172A;
+    margin-bottom:25px;
+}
+
+.hero h2 span{
+    color:#06B6D4;
+}
+
+.hero-description{
+    max-width:600px;
+    font-size:18px;
+    line-height:1.9;
+    color:#475569;
+    margin-bottom:40px;
+}
+
+/* =========================
+        BUTTONS
+========================= */
+
+.hero-buttons{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.btn-primary,
+.btn-secondary{
+    text-decoration:none;
+    padding:15px 34px;
+    border-radius:50px;
+    font-weight:600;
+    transition:.3s ease;
+}
+
+.btn-primary{
+    background:#2563EB;
+    color:#FFFFFF;
+    box-shadow:0 12px 25px rgba(37,99,235,.25);
+}
+
+.btn-primary:hover{
+    background:#1D4ED8;
+    transform:translateY(-3px);
+}
+
+.btn-secondary{
+    background:transparent;
+    color:#2563EB;
+    border:2px solid #2563EB;
+}
+
+.btn-secondary:hover{
+    background:#2563EB;
+    color:#FFFFFF;
+    transform:translateY(-3px);
+}
+
+/* =========================
+        IMAGE
+========================= */
+
+.hero-image{
+    flex:1;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+}
+
+.hero-image img{
+    width:430px;
+    max-width:100%;
+    height:auto;
+    object-fit:cover;
+    background:transparent;
+    border:none;
+    border-radius:12px;
+    filter:drop-shadow(0 25px 35px rgba(37,99,235,.20));
+}
+
+/* =========================
+        RESPONSIVE
+========================= */
+
+@media (max-width:900px){
+
+.hero{
+    flex-direction:column-reverse;
+    text-align:center;
+    gap:50px;
+    padding:70px 8%;
+}
+
+.hero h2{
+    font-size:48px;
+}
+
+.hero-description{
+    margin:0 auto 35px;
+}
+
+.hero-buttons{
+    justify-content:center;
+}
+
+.hero-image img{
+    width:320px;
+}
+
+}
+
+@media (max-width:600px){
+
+.hero h2{
+    font-size:38px;
+}
+
+.hero-subtitle{
+    font-size:15px;
+}
+
+.hero-description{
+    font-size:16px;
+}
+
+.hero-image img{
+    width:250px;
+}
+
+}
