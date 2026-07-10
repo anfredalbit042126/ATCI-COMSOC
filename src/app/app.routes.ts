@@ -1,34 +1,50 @@
 import { Routes } from '@angular/router';
 
-import { Home } from './pages/home/home';
-import { About } from './pages/about/about';
-import { Project } from './pages/project/project';
-import { Skill } from './pages/skill/skill';
-import { Contact } from './pages/contact/contact';
+import { Dashboard } from './pages/dashboard/dashboard';
+import { Member } from './pages/member/member';
+import { Officer } from './pages/officer/officer';
+import { Login } from './pages/login/login';
+import { Layout } from './pages/layout/layout';
+
+import { authGuard } from './auth-guard';
+
 
 export const routes: Routes = [
+
+  {
+    path: 'login',
+    component: Login
+  },
+
+
   {
     path: '',
-    component: Home
+    component: Layout,
+    canActivate: [authGuard],
+    children: [
+
+      {
+        path: '',
+        component: Dashboard
+      },
+
+      {
+        path: 'member',
+        component: Member
+      },
+
+      {
+        path: 'officer',
+        component: Officer
+      }
+
+    ]
   },
-  {
-    path: 'about',
-    component: About
-  },
-  {
-    path: 'project',
-    component: Project
-  },
-   {
-    path: 'skill',
-    component: Skill
-  },
-  {
-    path: 'contact',
-    component: Contact
-  },
+
+
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'login'
   }
+
 ];

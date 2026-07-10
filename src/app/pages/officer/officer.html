@@ -1,0 +1,131 @@
+<section class="officers">
+
+    <!-- Header -->
+    <div class="officers-header">
+
+        <h1>
+            Organization <span>Officers</span>
+        </h1>
+
+        <p class="description">
+            Manage the list of COMSOC officers and their respective positions.
+        </p>
+
+    </div>
+
+    <!-- Add Officer -->
+
+    <div class="add-officer">
+
+        <h2>Add Officer</h2>
+
+        <div class="form">
+
+            <input
+                type="text"
+                placeholder="Last Name"
+                [(ngModel)]="newLastName">
+
+            <input
+                type="text"
+                placeholder="First Name"
+                [(ngModel)]="newFirstName">
+
+            <input
+                type="text"
+                placeholder="Middle Name (Optional)"
+                [(ngModel)]="newMiddleName">
+
+            <input
+                type="password"
+                maxlength="6"
+                placeholder="6 Digit PIN"
+                [(ngModel)]="newPin">
+
+            <select [(ngModel)]="newPosition">
+
+                <option value="">Select Position</option>
+
+                <option
+                    *ngFor="let position of positions"
+                    [value]="position">
+
+                    {{ position }}
+
+                </option>
+
+            </select>
+
+            <div class="add-button">
+
+                <button (click)="addOfficer()">
+                    Add Officer
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            placeholder="Search officer..."
+            [(ngModel)]="search">
+
+    </div>
+
+    <!-- Officers Table -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Position</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr
+                    *ngFor="let officer of filteredOfficers(); let i = index">
+
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ officer.lastName }}</td>
+                    <td>{{ officer.firstName }}</td>
+                    <td>{{ officer.middleName || '-' }}</td>
+                    <td>{{ officer.position }}</td>
+
+                </tr>
+
+                <tr *ngIf="filteredOfficers().length === 0">
+
+                    <td
+                        colspan="5"
+                        class="empty">
+
+                        No officers found.
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>

@@ -1,0 +1,48 @@
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <a routerLink="/" class="logo">
+            <img src="/images/comsoc-logo.jpg" alt="Com Soc">
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <!-- Everyone can see -->
+            <li>
+                <a routerLink="/member" routerLinkActive="active">
+                    👥 Members
+                </a>
+            </li>
+
+            <!-- Only Admin -->
+            <li *ngIf="isAdmin()">
+                <a routerLink="/officer" routerLinkActive="active">
+                    👮 Officers
+                </a>
+            </li>
+
+
+            <li>
+                <a href="#" (click)="logout(); $event.preventDefault()">
+                    🚪 Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <div class="content">
+        <main>
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+
+</div>
