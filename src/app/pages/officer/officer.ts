@@ -120,7 +120,9 @@ export class Officer implements OnInit {
 
     'Business Manager',
 
-    'Public Information Officer'
+    'Public Information Officer',
+
+    'Adviser'
 
   ];
 
