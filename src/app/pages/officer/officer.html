@@ -250,7 +250,7 @@
             <select
             [(ngModel)]="newPosition">
 
-                <option value="">
+                <option *ngIf="!newPosition" value="">
                     Select Position
                 </option>
 

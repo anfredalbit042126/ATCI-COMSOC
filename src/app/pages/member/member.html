@@ -23,143 +23,159 @@
 
     <div class="filters">
 
-        <!-- Course -->
+    <!-- Education Level -->
 
-        <div class="filter-group">
+    <div class="filter-group">
 
-           <label>Education Level</label>
+        <label>Education Level</label>
 
-            <select [(ngModel)]="selectedEducationLevel"
-                    (ngModelChange)="onEducationLevelChange()">
+        <select
+            [(ngModel)]="selectedEducationLevel"
+            (ngModelChange)="onEducationLevelChange()">
 
-                <option value="">All Levels</option>
+            <option value="">All Levels</option>
+            <option value="College">College</option>
+            <option value="SHS">Senior High School</option>
 
-                <option value="College">
-                    College
-                </option>
-
-                <option value="SHS">
-                    Senior High School
-                </option>
-
-            </select>
-
-        </div>
-
-        <!-- Course -->
-
-        <div
-            class="filter-group"
-            *ngIf="selectedEducationLevel === 'College'">
-
-            <label>Course</label>
-
-            <select
-            [(ngModel)]="selectedCourse"
-            (ngModelChange)="currentPage = 1">
-
-                <option value="">All Courses</option>
-
-                <option
-                    *ngFor="let course of courses"
-                    [value]="course">
-
-                    {{ course }}
-
-                </option>
-
-            </select>
-
-        </div>
-
-        <!-- Strand -->
-
-        <div
-            class="filter-group"
-            *ngIf="selectedEducationLevel === 'SHS'">
-
-            <label>Strand</label>
-
-            <select [(ngModel)]="selectedStrand"
-             (ngModelChange)="currentPage = 1">
-
-                <option value="">All Strands</option>
-
-                <option
-                    *ngFor="let strand of strands"
-                    [value]="strand">
-
-                    {{ strand }}
-
-                </option>
-
-            </select>
-
-        </div>
-
-        <!-- Year -->
-
-        <div
-            class="filter-group"
-            *ngIf="selectedEducationLevel">
-
-            <label>
-
-                {{ selectedEducationLevel === 'SHS'
-                    ? 'Grade Level'
-                    : 'Year Level' }}
-
-            </label>
-
-            <select [(ngModel)]="selectedYear"
-             (ngModelChange)="currentPage = 1">
-
-                <option value="">All</option>
-
-                <option
-                    *ngFor="let year of selectedEducationLevel === 'SHS'
-                        ? shsYears
-                        : collegeYears"
-                    [value]="year">
-
-                    {{ year }}
-
-                </option>
-
-            </select>
-
-        </div>
-        <!-- Search -->
-
-        <div class="filter-group">
-
-            <label>Search Last Name</label>
-
-            <input
-                type="text"
-                placeholder="Enter last name..."
-                [(ngModel)]="searchLastName"
-                 (ngModelChange)="currentPage = 1">
-
-        </div>
-
-        <!-- Add Button -->
-
-        <div class="filter-group add-member-btn">
-
-            <label>&nbsp;</label>
-
-            <button
-                class="btn-add"
-                (click)="showAddModal = true">
-
-                + Add Member
-
-            </button>
-
-        </div>
+        </select>
 
     </div>
+
+    <!-- Course -->
+
+    <div
+        class="filter-group"
+        *ngIf="selectedEducationLevel === 'College'">
+
+        <label>Course</label>
+
+        <select
+            [(ngModel)]="selectedCourse"
+            (ngModelChange)="onCourseFilterChange()">
+
+            <option value="">All Courses</option>
+
+            <option
+                *ngFor="let course of courses"
+                [value]="course">
+
+                {{ course }}
+
+            </option>
+
+        </select>
+
+    </div>
+
+    <!-- Strand -->
+
+    <div
+        class="filter-group"
+        *ngIf="selectedEducationLevel === 'SHS'">
+
+        <label>Strand</label>
+
+        <select
+            [(ngModel)]="selectedStrand"
+            (ngModelChange)="onStrandFilterChange()">
+
+            <option value="">All Strands</option>
+
+            <option
+                *ngFor="let strand of strands"
+                [value]="strand">
+
+                {{ strand }}
+
+            </option>
+
+        </select>
+
+    </div>
+
+    <!-- College Year -->
+
+    <div
+        class="filter-group"
+        *ngIf="selectedEducationLevel === 'College' && selectedCourse">
+
+        <label>Year Level</label>
+
+        <select
+            [(ngModel)]="selectedYear"
+            (ngModelChange)="currentPage = 1">
+
+            <option value="">All Years</option>
+
+            <option
+                *ngFor="let year of filterCollegeYears"
+                [value]="year">
+
+                {{ year }}
+
+            </option>
+
+        </select>
+
+    </div>
+
+    <!-- SHS Grade -->
+
+    <div
+        class="filter-group"
+        *ngIf="selectedEducationLevel === 'SHS' && selectedStrand">
+
+        <label>Grade Level</label>
+
+        <select
+            [(ngModel)]="selectedYear"
+            (ngModelChange)="currentPage = 1">
+
+            <option value="">All Grades</option>
+
+            <option
+                *ngFor="let year of shsYears"
+                [value]="year">
+
+                {{ year }}
+
+            </option>
+
+        </select>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="filter-group">
+
+        <label>Search Last Name</label>
+
+        <input
+            type="text"
+            placeholder="Enter last name..."
+            [(ngModel)]="searchLastName"
+            (ngModelChange)="currentPage = 1">
+
+    </div>
+
+    <!-- Add Member -->
+
+    <div class="filter-group add-member-btn">
+
+        <label>&nbsp;</label>
+
+        <button
+            class="btn-add"
+            (click)="showAddModal = true">
+
+            + Add Member
+
+        </button>
+
+    </div>
+
+</div>
 
     <!-- ==================================================
          Members Table

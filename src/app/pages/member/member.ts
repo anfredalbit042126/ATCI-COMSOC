@@ -233,6 +233,7 @@ export class Member implements OnInit {
 
     /* Close the Angular modal immediately */
     this.showAddModal = false;
+    this.cdr.detectChanges();
 
     /* Show loading dialog */
     Swal.fire({
@@ -283,9 +284,24 @@ export class Member implements OnInit {
 
       await this.loadMembers();
 
+      await this.loadMembers();
+
+      // Reset form
+      this.newLastName = '';
+      this.newFirstName = '';
+      this.newMiddleName = '';
+      this.newEducationLevel = '';
+      this.newCourse = '';
+      this.newStrand = '';
+      this.newYear = '';
+
+      // Make sure modal is closed
+      this.showAddModal = false;
+      this.cdr.detectChanges();
+
       Swal.close();
 
-      Swal.fire({
+      await Swal.fire({
         icon: 'success',
         title: 'Member Added!',
         text: 'The member has been added successfully.',
@@ -417,85 +433,77 @@ export class Member implements OnInit {
 
 
 
-  try {
+ try {
 
+  // Close Angular modal first
+  this.showEditModal = false;
+  this.cdr.detectChanges();
 
-    const ref = doc(
+  // Show loading dialog
+  Swal.fire({
+    title: 'Updating...',
+    text: 'Please wait.',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
 
-      db,
+  const ref = doc(
+    db,
+    'members',
+    this.editingMember.id
+  );
 
-      'members',
+  await updateDoc(ref, {
 
-      this.editingMember.id
+    lastName: this.editingMember.lastName.trim(),
+    firstName: this.editingMember.firstName.trim(),
+    middleName: this.editingMember.middleName.trim(),
 
-    );
+    educationLevel: this.editingMember.educationLevel,
 
-
-    await updateDoc(ref, {
-
-
-      lastName: this.editingMember.lastName.trim(),
-
-      firstName: this.editingMember.firstName.trim(),
-
-      middleName: this.editingMember.middleName.trim(),
-
-      educationLevel: this.editingMember.educationLevel,
-
-      course:
+    course:
       this.editingMember.educationLevel === 'College'
-          ? this.editingMember.course
-          : '',
+        ? this.editingMember.course
+        : '',
 
-      strand:
+    strand:
       this.editingMember.educationLevel === 'SHS'
-          ? this.editingMember.strand
-          : '',
+        ? this.editingMember.strand
+        : '',
 
-      year: this.editingMember.year
+    year: this.editingMember.year
 
+  });
 
-    });
+  await this.loadMembers();
 
+  Swal.close();
 
+  await Swal.fire({
+    icon: 'success',
+    title: 'Updated!',
+    text: 'Member updated successfully.',
+    confirmButtonColor: '#2563EB'
+  });
 
-    this.showEditModal = false;
+}
+catch (error) {
 
+  Swal.close();
 
-    await this.loadMembers();
+  console.error(error);
 
+  Swal.fire({
+    icon: 'error',
+    title: 'Update Failed',
+    text: 'Unable to update the member.',
+    confirmButtonColor: '#2563EB'
+  });
 
-
-    Swal.fire({
-
-      icon: 'success',
-
-      title: 'Updated',
-
-      text: 'Member updated successfully.'
-
-    });
-
-
-  }
-
-
-  catch(error) {
-
-
-    console.error(error);
-
-
-    Swal.fire({
-
-      icon: 'error',
-
-      title: 'Update Failed'
-
-    });
-
-
-  }
+}
 
 
 }
@@ -555,34 +563,47 @@ export class Member implements OnInit {
 
     try {
 
-      await deleteDoc(
-        doc(db, 'members', member.id)
-      );
-
-      await this.loadMembers();
-
-      Swal.fire({
-
-        icon: 'success',
-        title: 'Deleted',
-        text: 'Member removed successfully.'
-
-      });
-
+  // Show loading
+  Swal.fire({
+    title: 'Deleting...',
+    text: 'Please wait.',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    didOpen: () => {
+      Swal.showLoading();
     }
+  });
 
-    catch (error) {
+  await deleteDoc(
+    doc(db, 'members', member.id)
+  );
 
-      console.error(error);
+  await this.loadMembers();
 
-      Swal.fire({
+  Swal.close();
 
-        icon: 'error',
-        title: 'Delete Failed'
+    await Swal.fire({
+      icon: 'success',
+      title: 'Deleted!',
+      text: 'Member removed successfully.',
+      confirmButtonColor: '#2563EB'
+    });
 
-      });
+}
+catch (error) {
 
-    }
+  Swal.close();
+
+  console.error(error);
+
+  Swal.fire({
+    icon: 'error',
+    title: 'Delete Failed',
+    text: 'Unable to delete the member.'
+  });
+
+}
+
 
   }
 
@@ -750,6 +771,22 @@ onEditCourseChange() {
   ) {
     this.editingMember.year = '';
   }
+}
+
+onCourseFilterChange() {
+  this.selectedYear = '';
+  this.currentPage = 1;
+}
+
+onStrandFilterChange() {
+  this.selectedYear = '';
+  this.currentPage = 1;
+}
+
+get filterCollegeYears() {
+  return (this.selectedCourse === 'DIT' || this.selectedCourse === 'HRT')
+    ? ['1st Year', '2nd Year', '3rd Year']
+    : ['1st Year', '2nd Year', '3rd Year', '4th Year'];
 }
 
 }

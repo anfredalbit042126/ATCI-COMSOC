@@ -11,294 +11,163 @@ import {
 
 import { db } from './../../firebase';
 
-
 @Component({
-
-  selector:'app-profile',
-
-  standalone:true,
-
-  imports:[
+  selector: 'app-profile',
+  standalone: true,
+  imports: [
     CommonModule,
     FormsModule
   ],
-
-  templateUrl:'./profile.html',
-
-  styleUrl:'./profile.css'
-
+  templateUrl: './profile.html',
+  styleUrl: './profile.css'
 })
-
 
 export class Profile implements OnInit {
 
-
-  user:any = {};
-
+  user: any = {};
 
   editFirstName = '';
   editLastName = '';
 
   canEdit = false;
 
-
-
-  ngOnInit(){
-
+  ngOnInit() {
 
     this.user = JSON.parse(
-
       localStorage.getItem('user') || '{}'
-
     );
 
-
-    this.editFirstName =
-
-    this.user.firstName || '';
-
-
-
-    this.editLastName =
-
-    this.user.lastName || '';
-
-
+    this.editFirstName = this.user.firstName || '';
+    this.editLastName = this.user.lastName || '';
 
     this.canEdit =
-
-    this.user.role === 'admin' ||
-
-    this.user.role === 'officer';
-
+      this.user.role === 'admin' ||
+      this.user.role === 'officer';
 
   }
 
+  async updateProfile() {
 
-
-  async updateProfile(){
-
-
-    if(
-
+    if (
       this.editFirstName.trim() === '' ||
-
       this.editLastName.trim() === ''
-
-    ){
+    ) {
 
       Swal.fire({
-
-        icon:'warning',
-
-        title:'Incomplete Information',
-
-        text:'First name and last name are required.',
-
-        confirmButtonColor:'#2563EB'
-
+        icon: 'warning',
+        title: 'Incomplete Information',
+        text: 'First name and last name are required.',
+        confirmButtonColor: '#2563EB'
       });
-
 
       return;
 
     }
 
-
-
-    // CHECK IF NO CHANGES
-
-    if(
-
+    if (
       this.editFirstName.trim() === this.user.firstName &&
-
       this.editLastName.trim() === this.user.lastName
-
-    ){
+    ) {
 
       Swal.fire({
-
-        icon:'info',
-
-        title:'No Changes',
-
-        text:'There is no information to update.',
-
-        confirmButtonColor:'#2563EB'
-
+        icon: 'info',
+        title: 'No Changes',
+        text: 'There is no information to update.',
+        confirmButtonColor: '#2563EB'
       });
-
 
       return;
 
     }
 
-
-
-
-    if(!this.user.id){
-
+    if (!this.user.id) {
 
       Swal.fire({
-
-        icon:'error',
-
-        title:'Account Error',
-
-        text:'Account ID not found. Please login again.',
-
-        confirmButtonColor:'#DC2626'
-
+        icon: 'error',
+        title: 'Account Error',
+        text: 'Account ID not found. Please login again.',
+        confirmButtonColor: '#DC2626'
       });
-
 
       return;
 
     }
-
-
-
 
     const result = await Swal.fire({
-
-
-      title:'Update Profile?',
-
-      text:'Save the changes?',
-
-      icon:'question',
-
-
-      showCancelButton:true,
-
-
-      confirmButtonText:'Update',
-
-      cancelButtonText:'Cancel',
-
-
-      confirmButtonColor:'#2563EB',
-
-      cancelButtonColor:'#64748B'
-
-
+      title: 'Update Profile?',
+      text: 'Save the changes?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Update',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#2563EB',
+      cancelButtonColor: '#64748B'
     });
 
-
-
-    if(!result.isConfirmed){
-
+    if (!result.isConfirmed) {
       return;
-
     }
 
-
-
-    try{
-
-
-      const collectionName =
-
-      this.user.role === 'admin'
-
-      ? 'admins'
-
-      : 'officers';
-
-
-
-      const ref = doc(
-
-        db,
-
-        collectionName,
-
-        this.user.id
-
-      );
-
-
-
-      await updateDoc(ref,{
-
-
-        firstName:
-
-        this.editFirstName.trim(),
-
-
-        lastName:
-
-        this.editLastName.trim()
-
-
-      });
-
-
-
-      this.user.firstName =
-
-      this.editFirstName.trim();
-
-
-
-      this.user.lastName =
-
-      this.editLastName.trim();
-
-
-
-      localStorage.setItem(
-
-        'user',
-
-        JSON.stringify(this.user)
-
-      );
-
-
+    try {
 
       Swal.fire({
-
-        icon:'success',
-
-        title:'Updated',
-
-        text:'Profile updated successfully.',
-
-        confirmButtonColor:'#2563EB'
-
+        title: 'Updating...',
+        text: 'Please wait.',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
       });
 
+      const collectionName =
+        this.user.role === 'admin'
+          ? 'admins'
+          : 'officers';
 
+      const ref = doc(
+        db,
+        collectionName,
+        this.user.id
+      );
 
-    }
+      await updateDoc(ref, {
+        firstName: this.editFirstName.trim(),
+        lastName: this.editLastName.trim()
+      });
 
+      this.user.firstName = this.editFirstName.trim();
+      this.user.lastName = this.editLastName.trim();
 
-    catch(error){
+      localStorage.setItem(
+        'user',
+        JSON.stringify(this.user)
+      );
 
+      Swal.close();
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'Updated!',
+        text: 'Profile updated successfully.',
+        confirmButtonColor: '#2563EB'
+      });
+
+    } catch (error) {
+
+      Swal.close();
 
       console.error(error);
 
-
-
       Swal.fire({
-
-        icon:'error',
-
-        title:'Update Failed',
-
-        text:'Unable to update profile.',
-
-        confirmButtonColor:'#DC2626'
-
+        icon: 'error',
+        title: 'Update Failed',
+        text: 'Unable to update profile.',
+        confirmButtonColor: '#DC2626'
       });
-
 
     }
 
-
   }
-
 
 }

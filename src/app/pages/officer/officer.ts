@@ -297,9 +297,9 @@ export class Officer implements OnInit {
 
   }
 
-
     /* Close the Angular modal immediately */
     this.showAddModal = false;
+    this.cdr.detectChanges();
 
     /* Show loading dialog */
         Swal.fire({
@@ -346,7 +346,13 @@ export class Officer implements OnInit {
     this.newPosition='';
     this.newPin='';
 
+    this.showAddModal = false;
+    this.cdr.detectChanges();
+
+
     await this.loadOfficers();
+
+    this.cdr.detectChanges();
 
     Swal.close();
 
@@ -485,84 +491,79 @@ export class Officer implements OnInit {
 
 
 
-    try{
+    try {
 
+    // Close the Angular modal first
+    this.showEditModal = false;
+    this.cdr.detectChanges();
 
-        const ref = doc(
+    // Show loading dialog
+    Swal.fire({
+        title: 'Updating...',
+        text: 'Please wait.',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
-            db,
+    const ref = doc(
+        db,
+        'officers',
+        this.editingOfficer.id
+    );
 
-            'officers',
+    await updateDoc(ref, {
 
-            this.editingOfficer.id
+        lastName: this.editingOfficer.lastName.trim(),
 
-        );
+        firstName: this.editingOfficer.firstName.trim(),
 
+        middleName: this.editingOfficer.middleName.trim(),
 
-        await updateDoc(ref,{
+        position: this.editingOfficer.position,
 
+        pin: this.editingOfficer.pin
 
-            lastName:
-            this.editingOfficer.lastName.trim(),
+    });
 
+    await this.loadOfficers();
 
-            firstName:
-            this.editingOfficer.firstName.trim(),
+    Swal.close();
 
+    await Swal.fire({
 
-            middleName:
-            this.editingOfficer.middleName.trim(),
+        icon: 'success',
 
+        title: 'Updated!',
 
-            position:
-            this.editingOfficer.position,
+        text: 'Officer updated successfully.',
 
+        confirmButtonColor: '#2563EB'
 
-            pin:
-            this.editingOfficer.pin
+    });
 
+}
+catch (error) {
 
-        });
+    Swal.close();
 
+    console.error(error);
 
+    Swal.fire({
 
-        this.showEditModal=false;
+        icon: 'error',
 
+        title: 'Update Failed',
 
-        await this.loadOfficers();
+        text: 'Unable to update the officer.',
 
+        confirmButtonColor: '#2563EB'
 
+    });
 
-        Swal.fire({
-
-            icon:'success',
-
-            title:'Updated',
-
-            text:'Officer updated successfully.'
-
-        });
-
-
-    }
-
-
-    catch(error){
-
-
-        console.error(error);
-
-
-        Swal.fire({
-
-            icon:'error',
-
-            title:'Update Failed'
-
-        });
-
-
-    }
+}
 
 
 }
@@ -644,66 +645,57 @@ export class Officer implements OnInit {
 
     });
 
-    if(!result.isConfirmed){
+    if (!result.isConfirmed) {
+  return;
+}
 
-      return;
+// Show loading dialog
+Swal.fire({
+  title: 'Deleting...',
+  text: 'Please wait.',
+  allowOutsideClick: false,
+  allowEscapeKey: false,
+  didOpen: () => {
+    Swal.showLoading();
+  }
+});
 
-    }
+try {
 
+  await deleteDoc(
+    doc(
+      db,
+      'officers',
+      officer.id
+    )
+  );
 
-    try{
+  await this.loadOfficers();
 
+  Swal.close();
 
-      await deleteDoc(
+  Swal.fire({
+    icon: 'success',
+    title: 'Deleted!',
+    text: 'Officer removed successfully.',
+    confirmButtonColor: '#2563EB'
+  });
 
-        doc(
+}
+catch (error) {
 
-          db,
+  Swal.close();
 
-          'officers',
+  console.error(error);
 
-          officer.id
+  Swal.fire({
+    icon: 'error',
+    title: 'Delete Failed',
+    text: 'Unable to delete the officer.',
+    confirmButtonColor: '#2563EB'
+  });
 
-        )
-
-      );
-
-      await this.loadOfficers();
-
-
-      Swal.fire({
-
-
-        icon:'success',
-
-        title:'Deleted',
-
-        text:'Officer removed successfully.'
-
-
-      });
-
-
-
-    }
-
-    catch(error){
-
-
-      console.error(error);
-
-
-
-      Swal.fire({
-
-        icon:'error',
-
-        title:'Delete Failed'
-
-      });
-
-
-    }
+}
 
 
 
