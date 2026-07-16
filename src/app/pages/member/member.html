@@ -29,7 +29,8 @@
 
             <label>Course</label>
 
-            <select [(ngModel)]="selectedCourse">
+            <select [(ngModel)]="selectedCourse"
+                    (ngModelChange)="currentPage = 1">
 
                 <option value="">All Courses</option>
 
@@ -53,7 +54,8 @@
 
             <label>Year Level</label>
 
-            <select [(ngModel)]="selectedYear">
+            <select [(ngModel)]="selectedYear"
+                    (ngModelChange)="currentPage = 1">
 
                 <option value="">All Years</option>
 
@@ -179,7 +181,8 @@
          Pagination
     ================================================== -->
 
-    <div class="pagination">
+    <div class="pagination"
+        *ngIf="filteredMembers().length > rowsPerPage">
 
         <button
             (click)="previousPage()"
@@ -308,7 +311,7 @@
 
             <input
                 type="text"
-                placeholder="Middle Name"
+                placeholder="Middle Name (Optional)"
                 [(ngModel)]="editingMember.middleName">
 
             <select [(ngModel)]="editingMember.course">

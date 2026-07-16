@@ -266,12 +266,6 @@ tbody tr:hover {
     cursor: not-allowed;
 }
 
-.pagination span {
-    font-weight: 400;
-    color: #475569;
-}
-
-
 /* ==================================================
    MODAL
 ================================================== */
@@ -279,7 +273,7 @@ tbody tr:hover {
 .modal {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -310,6 +304,14 @@ tbody tr:hover {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+}
+
+/* ==================================================
+   SWEETALERT OVER MODAL FIX
+================================================== */
+
+.swal2-container {
+    z-index: 20000 !important;
 }
 
 /* ==================================================
@@ -388,10 +390,6 @@ tbody tr:hover {
         min-width: 650px;
     }
 }
-
-/* ==================================================
-   SMALL PHONES
-================================================== */
 
 @media (max-width: 480px) {
 

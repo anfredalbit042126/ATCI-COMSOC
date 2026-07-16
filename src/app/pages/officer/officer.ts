@@ -209,159 +209,162 @@ export class Officer implements OnInit {
   async addOfficer(){
 
 
-    if(
+  if(
 
-      this.newLastName.trim() === '' ||
+    this.newLastName.trim() === '' ||
+    this.newFirstName.trim() === '' ||
+    this.newPosition === '' ||
+    !/^[0-9]{6}$/.test(this.newPin)
 
-      this.newFirstName.trim() === '' ||
+  ){
 
-      this.newPosition === '' ||
+    Swal.fire({
 
-      this.newPin.length !== 6
+      icon:'warning',
 
-    ){
+      title:'Incomplete Information',
 
-
-      Swal.fire({
-
-        icon:'warning',
-
-        title:'Incomplete Information',
-
-        text:'Please complete all required fields and enter a valid 6-digit PIN.',
-
-        confirmButtonColor:'#2563EB'
-
-      });
-
-
-      return;
-
-
-    }
-
-
-    const result = await Swal.fire({
-
-
-      title:'Add Officer?',
-
-      text:'Are you sure you want to add this officer?',
-
-      icon:'question',
-
-
-      showCancelButton:true,
-
-
-      confirmButtonText:'Yes, Add',
-
-      cancelButtonText:'Cancel',
-
+      text:'Please complete all required fields and enter a valid 6-digit PIN.',
 
       confirmButtonColor:'#2563EB',
 
-      cancelButtonColor:'#64748B'
+      heightAuto:false,
 
+      allowOutsideClick:false,
+
+      allowEscapeKey:false,
+
+
+      didOpen: () => {
+
+        Swal.getPopup()?.style.setProperty(
+          'z-index',
+          '10000'
+        );
+
+      }
 
     });
 
 
-    if(!result.isConfirmed){
+    return;
 
-      return;
-
-    }
+  }
 
 
-    try{
 
+  const result = await Swal.fire({
 
-      await addDoc(
+    title:'Add Officer?',
 
-        collection(db,'officers'),
+    text:'Are you sure you want to add this officer?',
 
-        {
+    icon:'question',
 
+    allowOutsideClick:false,
 
-          lastName:this.newLastName.trim(),
+    allowEscapeKey:false,
 
-          firstName:this.newFirstName.trim(),
+    showCancelButton:true,
 
-          middleName:this.newMiddleName.trim(),
+    confirmButtonText:'Yes, Add',
 
+    cancelButtonText:'Cancel',
 
-          role:this.role,
+    confirmButtonColor:'#2563EB',
 
-          pin:this.newPin,
+    cancelButtonColor:'#64748B',
 
-          position:this.newPosition,
+    heightAuto:false,
 
+    didOpen: () => {
 
-          createdAt:new Date()
-
-
-        }
-
+      Swal.getPopup()?.style.setProperty(
+        'z-index',
+        '10000'
       );
 
-
-      this.newLastName='';
-
-      this.newFirstName='';
-
-      this.newMiddleName='';
-
-      this.newPosition='';
-
-      this.newPin='';
-
-
-      this.showAddModal=false;
-
-
-      await this.loadOfficers();
-
-
-      Swal.fire({
-
-        icon:'success',
-
-        title:'Officer Added!',
-
-        text:'The officer has been added successfully.',
-
-        confirmButtonColor:'#2563EB'
-
-      });
-
-
-
     }
 
-
-    catch(error){
-
-
-      console.error(error);
+  });
 
 
 
-      Swal.fire({
+  if(!result.isConfirmed){
 
-        icon:'error',
+    return;
 
-        title:'Failed',
-
-        text:'Unable to add the officer.'
-
-      });
+  }
 
 
-    }
+
+  try{
+
+
+    await addDoc(
+
+      collection(db,'officers'),
+
+      {
+
+        lastName:this.newLastName.trim(),
+
+        firstName:this.newFirstName.trim(),
+
+        middleName:this.newMiddleName.trim(),
+
+        role:this.role,
+
+        pin:this.newPin,
+
+        position:this.newPosition,
+
+        createdAt:new Date()
+
+      }
+
+    );
+
+
+    this.newLastName='';
+    this.newFirstName='';
+    this.newMiddleName='';
+    this.newPosition='';
+    this.newPin='';
+
+
+    this.showAddModal=false;
+
+
+    await this.loadOfficers();
+
+
+    Swal.fire({
+
+      icon:'success',
+
+      title:'Officer Added!',
+
+      text:'The officer has been added successfully.',
+
+      confirmButtonColor:'#2563EB',
+
+      heightAuto:false
+
+    });
+
 
 
   }
+
+  catch(error){
+
+    console.error(error);
+
+  }
+
+
+}
 
 
   /* ==================================================
@@ -387,91 +390,145 @@ export class Officer implements OnInit {
 
   async updateOfficer(){
 
+    // Check PIN validation
+    if(!/^[0-9]{6}$/.test(this.editingOfficer.pin)){
+
+        Swal.fire({
+
+            icon:'warning',
+            title:'Invalid PIN',
+            text:'PIN must be exactly 6 digits.',
+            confirmButtonColor:'#2563EB'
+
+        });
+
+        return;
+
+    }
+
+
+    // Find original officer data
+    const originalOfficer = this.officers.find(
+        officer => officer.id === this.editingOfficer.id
+    );
+
+
+    // Check if no changes
+    const noChanges =
+
+        originalOfficer.lastName === this.editingOfficer.lastName.trim() &&
+
+        originalOfficer.firstName === this.editingOfficer.firstName.trim() &&
+
+        originalOfficer.middleName === this.editingOfficer.middleName.trim() &&
+
+        originalOfficer.position === this.editingOfficer.position &&
+
+        originalOfficer.pin === this.editingOfficer.pin;
+
+
+
+    if(noChanges){
+
+        Swal.fire({
+
+            icon:'info',
+            title:'No Changes',
+            text:'There are no changes to update.',
+            confirmButtonColor:'#2563EB'
+
+        });
+
+        return;
+
+    }
+
+
 
     const result = await Swal.fire({
 
+        title:'Update Officer?',
 
-      title:'Update Officer?',
+        text:'Save the changes?',
 
-      text:'Save the changes?',
+        icon:'question',
 
-      icon:'question',
+        showCancelButton:true,
 
+        confirmButtonText:'Update',
 
-      showCancelButton:true,
+        cancelButtonText:'Cancel',
 
-
-      confirmButtonText:'Update',
-
-      cancelButtonText:'Cancel',
-
-
-      confirmButtonColor:'#2563EB'
-
+        confirmButtonColor:'#2563EB'
 
     });
 
 
     if(!result.isConfirmed){
 
-      return;
+        return;
 
     }
 
 
+
     try{
 
-      const ref = doc(
 
-        db,
+        const ref = doc(
 
-        'officers',
+            db,
 
-        this.editingOfficer.id
+            'officers',
 
-      );
+            this.editingOfficer.id
 
-
-      await updateDoc(ref,{
+        );
 
 
-        lastName:
-        this.editingOfficer.lastName.trim(),
+        await updateDoc(ref,{
 
 
-        firstName:
-        this.editingOfficer.firstName.trim(),
+            lastName:
+            this.editingOfficer.lastName.trim(),
 
 
-        middleName:
-        this.editingOfficer.middleName.trim(),
+            firstName:
+            this.editingOfficer.firstName.trim(),
 
 
-        position:
-        this.editingOfficer.position,
+            middleName:
+            this.editingOfficer.middleName.trim(),
 
 
-        pin:
-        this.editingOfficer.pin
+            position:
+            this.editingOfficer.position,
 
 
-      });
-
-      this.showEditModal=false;
-
-      await this.loadOfficers();
+            pin:
+            this.editingOfficer.pin
 
 
-      Swal.fire({
+        });
 
-        icon:'success',
 
-        title:'Updated',
 
-        text:'Officer updated successfully.'
+        this.showEditModal=false;
 
-      });
 
+        await this.loadOfficers();
+
+
+
+        Swal.fire({
+
+            icon:'success',
+
+            title:'Updated',
+
+            text:'Officer updated successfully.'
+
+        });
 
 
     }
@@ -480,24 +537,22 @@ export class Officer implements OnInit {
     catch(error){
 
 
-      console.error(error);
+        console.error(error);
 
 
+        Swal.fire({
 
-      Swal.fire({
+            icon:'error',
 
-        icon:'error',
+            title:'Update Failed'
 
-        title:'Update Failed'
-
-      });
-
+        });
 
 
     }
 
 
-  }
+}
 
 
   /* ==================================================

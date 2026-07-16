@@ -264,72 +264,148 @@ export class Member implements OnInit {
 
   async updateMember() {
 
-    const result = await Swal.fire({
 
-      title: 'Update Member?',
-      text: 'Save the changes?',
-      icon: 'question',
+  // Get original member data
+  const originalMember = this.members.find(
+    member => member.id === this.editingMember.id
+  );
 
-      showCancelButton: true,
 
-      confirmButtonText: 'Update',
-      cancelButtonText: 'Cancel',
+  // Check if nothing changed
+  const noChanges =
 
-      confirmButtonColor: '#2563EB'
+    originalMember.lastName === this.editingMember.lastName.trim() &&
+
+    originalMember.firstName === this.editingMember.firstName.trim() &&
+
+    originalMember.middleName === this.editingMember.middleName.trim() &&
+
+    originalMember.course === this.editingMember.course &&
+
+    originalMember.year === this.editingMember.year;
+
+
+
+  if(noChanges){
+
+    Swal.fire({
+
+      icon:'info',
+
+      title:'No Changes',
+
+      text:'There are no changes to update.',
+
+      confirmButtonColor:'#2563EB'
 
     });
 
-    if (!result.isConfirmed) {
-      return;
-    }
-
-    try {
-
-      const ref = doc(
-        db,
-        'members',
-        this.editingMember.id
-      );
-
-      await updateDoc(ref, {
-
-        lastName: this.editingMember.lastName.trim(),
-        firstName: this.editingMember.firstName.trim(),
-        middleName: this.editingMember.middleName.trim(),
-
-        course: this.editingMember.course,
-        year: this.editingMember.year
-
-      });
-
-      this.showEditModal = false;
-
-      await this.loadMembers();
-
-      Swal.fire({
-
-        icon: 'success',
-        title: 'Updated',
-        text: 'Member updated successfully.'
-
-      });
-
-    }
-
-    catch (error) {
-
-      console.error(error);
-
-      Swal.fire({
-
-        icon: 'error',
-        title: 'Update Failed'
-
-      });
-
-    }
+    return;
 
   }
+
+
+
+  const result = await Swal.fire({
+
+    title: 'Update Member?',
+
+    text: 'Save the changes?',
+
+    icon: 'question',
+
+    showCancelButton: true,
+
+    confirmButtonText: 'Update',
+
+    cancelButtonText: 'Cancel',
+
+    confirmButtonColor: '#2563EB'
+
+  });
+
+
+
+  if (!result.isConfirmed) {
+
+    return;
+
+  }
+
+
+
+  try {
+
+
+    const ref = doc(
+
+      db,
+
+      'members',
+
+      this.editingMember.id
+
+    );
+
+
+    await updateDoc(ref, {
+
+
+      lastName: this.editingMember.lastName.trim(),
+
+      firstName: this.editingMember.firstName.trim(),
+
+      middleName: this.editingMember.middleName.trim(),
+
+      course: this.editingMember.course,
+
+      year: this.editingMember.year
+
+
+    });
+
+
+
+    this.showEditModal = false;
+
+
+    await this.loadMembers();
+
+
+
+    Swal.fire({
+
+      icon: 'success',
+
+      title: 'Updated',
+
+      text: 'Member updated successfully.'
+
+    });
+
+
+  }
+
+
+  catch(error) {
+
+
+    console.error(error);
+
+
+    Swal.fire({
+
+      icon: 'error',
+
+      title: 'Update Failed'
+
+    });
+
+
+  }
+
+
+}
 
   /* ==================================================
      Delete Member
