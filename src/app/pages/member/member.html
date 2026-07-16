@@ -303,7 +303,7 @@
             <select [(ngModel)]="newEducationLevel"
              (ngModelChange)="onNewEducationLevelChange()">
 
-                <option value="">
+                <option *ngIf="!newEducationLevel" value="">
                     Select Education Level
                 </option>
 
@@ -319,18 +319,13 @@
 
             <select
                 *ngIf="newEducationLevel === 'College'"
-                [(ngModel)]="newCourse">
+                [(ngModel)]="newCourse"
+                (ngModelChange)="onNewCourseChange()">
 
-                <option value="">
-                    Select Course
-                </option>
+                <option *ngIf="!newCourse" value="">Select Course</option>
 
-                <option
-                    *ngFor="let course of courses"
-                    [value]="course">
-
+                <option *ngFor="let course of courses" [value]="course">
                     {{ course }}
-
                 </option>
 
             </select>
@@ -339,7 +334,7 @@
                 *ngIf="newEducationLevel === 'SHS'"
                 [(ngModel)]="newStrand">
 
-                <option value="">Select Strand</option>
+                <option *ngIf="!newStrand" value="">Select Strand</option>
 
                 <option
                     *ngFor="let strand of strands"
@@ -355,10 +350,10 @@
               *ngIf="newEducationLevel === 'College'"
             [(ngModel)]="newYear">
 
-                <option value="">Select Year Level</option>
+                <option  *ngIf="!newYear" value="">Select Year Level</option>
 
                 <option
-                    *ngFor="let year of collegeYears"
+                    *ngFor="let year of addCollegeYears"
                     [value]="year">
 
                     {{ year }}
@@ -371,7 +366,7 @@
               *ngIf="newEducationLevel === 'SHS'"
               [(ngModel)]="newYear">
 
-              <option value="">
+              <option *ngIf="!newYear" value="">
                   Select Grade Level
               </option>
 
@@ -451,7 +446,8 @@
 
             <select
                 *ngIf="editingMember.educationLevel === 'College'"
-                [(ngModel)]="editingMember.course">
+                [(ngModel)]="editingMember.course"
+                  (ngModelChange)="onEditCourseChange()">
 
                 <option
                     *ngIf="!editingMember.course"
@@ -501,7 +497,7 @@
                 </option>
 
                 <option
-                    *ngFor="let year of collegeYears"
+                    *ngFor="let year of editCollegeYears"
                     [value]="year">
 
                     {{ year }}

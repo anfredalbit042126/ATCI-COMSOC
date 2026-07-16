@@ -95,7 +95,9 @@ export class Member implements OnInit {
     'BSIT',
     'BEED',
     'BSHM',
-    'BSBA'
+    'BSBA',
+    'HRT',
+    'DIT'
   ];
 
   collegeYears = [
@@ -715,4 +717,39 @@ onEditEducationLevelChange() {
   this.previousEducationLevel = this.editingMember.educationLevel;
 
 }
+
+get addCollegeYears() {
+  return (this.newCourse === 'DIT' || this.newCourse === 'HRT')
+    ? ['1st Year', '2nd Year', '3rd Year']
+    : ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+}
+
+get editCollegeYears() {
+  return (
+    this.editingMember.course === 'DIT' ||
+    this.editingMember.course === 'HRT'
+  )
+    ? ['1st Year', '2nd Year', '3rd Year']
+    : ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+}
+
+onNewCourseChange() {
+  if (
+    (this.newCourse === 'DIT' || this.newCourse === 'HRT') &&
+    this.newYear === '4th Year'
+  ) {
+    this.newYear = '';
+  }
+}
+
+onEditCourseChange() {
+  if (
+    (this.editingMember.course === 'DIT' ||
+     this.editingMember.course === 'HRT') &&
+    this.editingMember.year === '4th Year'
+  ) {
+    this.editingMember.year = '';
+  }
+}
+
 }
