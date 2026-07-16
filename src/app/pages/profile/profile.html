@@ -1,0 +1,176 @@
+<section class="profile">
+
+
+    <div class="profile-card">
+
+
+        <div class="profile-header">
+
+
+            <div class="avatar">
+
+                👤
+
+            </div>
+
+
+            <h1>
+
+                {{user.firstName}}
+                {{user.lastName}}
+
+            </h1>
+
+
+            <p>
+
+                {{user.role}}
+
+            </p>
+
+
+        </div>
+
+
+
+
+        <div class="profile-info">
+
+
+
+            <div class="info-item">
+
+
+                <label>
+
+                    First Name
+
+                </label>
+
+
+                <input
+
+                *ngIf="canEdit"
+
+                type="text"
+
+                [(ngModel)]="editFirstName">
+
+
+
+                <span *ngIf="!canEdit">
+
+                    {{user.firstName}}
+
+                </span>
+
+
+            </div>
+
+
+
+
+            <div class="info-item">
+
+
+                <label>
+
+                    Last Name
+
+                </label>
+
+
+                <input
+
+                *ngIf="canEdit"
+
+                type="text"
+
+                [(ngModel)]="editLastName">
+
+
+
+                <span *ngIf="!canEdit">
+
+                    {{user.lastName}}
+
+                </span>
+
+
+            </div>
+
+
+
+
+
+            <div class="info-item">
+
+
+                <label>
+
+                    Role
+
+                </label>
+
+
+                <span>
+
+                    {{user.role}}
+
+                </span>
+
+
+            </div>
+
+
+
+
+
+            <div
+
+            class="info-item"
+
+            *ngIf="user.position">
+
+
+                <label>
+
+                    Position
+
+                </label>
+
+
+                <span>
+
+                    {{user.position}}
+
+                </span>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+        <button
+
+        *ngIf="canEdit"
+
+        (click)="updateProfile()">
+
+
+            Update Profile
+
+
+        </button>
+
+
+
+    </div>
+
+
+</section>

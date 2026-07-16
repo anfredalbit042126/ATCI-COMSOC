@@ -1,5 +1,6 @@
 import {
-  Component
+  Component,
+  OnInit
 } from '@angular/core';
 
 import {
@@ -17,113 +18,132 @@ import {
 
 
 @Component({
-  selector: 'app-layout',
-  standalone: true,
 
-  imports: [
+  selector:'app-layout',
+
+  standalone:true,
+
+  imports:[
     CommonModule,
     RouterOutlet,
     RouterLink,
     RouterLinkActive
   ],
 
-  templateUrl: './layout.html',
-  styleUrl: './layout.css'
+  templateUrl:'./layout.html',
+
+  styleUrl:'./layout.css'
+
 })
 
 
-export class Layout {
+export class Layout implements OnInit {
 
-
-  /* ==================================================
-     Constructor
-  ================================================== */
 
   constructor(
     private router: Router
-  ) {
+  ){}
+
+
+
+  user:any = null;
+
+
+
+  ngOnInit(){
+
+
+    this.loadUser();
+
+
+  }
+
+
+
+  loadUser(){
+
 
     const session = localStorage.getItem('user');
 
-    if (session) {
+
+    if(session){
 
       this.user = JSON.parse(session);
 
     }
 
+
   }
 
 
-  /* ==================================================
-     Properties
-  ================================================== */
 
-  user: any = null;
+  isAdmin():boolean{
 
-
-  /* ==================================================
-     Role Checking
-  ================================================== */
-
-  isAdmin(): boolean {
 
     return this.user?.role === 'admin';
 
+
   }
 
 
-  isOfficer(): boolean {
+
+  isOfficer():boolean{
+
 
     return this.user?.role === 'officer';
 
+
   }
 
 
-  isMember(): boolean {
+
+  isMember():boolean{
+
 
     return this.user?.role === 'member';
 
+
   }
 
 
-  /* ==================================================
-     Logout
-  ================================================== */
 
-  logout() {
+  logout(){
 
 
     Swal.fire({
 
-      title: 'Logout',
 
-      text: 'Are you sure you want to log out?',
+      title:'Logout',
 
-      icon: 'question',
+      text:'Are you sure you want to log out?',
 
-      showCancelButton: true,
+      icon:'question',
 
-      confirmButtonText: 'Yes, Logout',
 
-      cancelButtonText: 'Cancel',
+      showCancelButton:true,
 
-      confirmButtonColor: '#dc2626',
 
-      cancelButtonColor: '#6b7280'
+      confirmButtonText:'Yes, Logout',
+
+      cancelButtonText:'Cancel',
+
+
+      confirmButtonColor:'#dc2626',
+
+      cancelButtonColor:'#6b7280'
+
 
     })
-    .then((result) => {
+    .then(result=>{
 
 
-      if (result.isConfirmed) {
+      if(result.isConfirmed){
 
 
         localStorage.removeItem('user');
 
 
-        this.router.navigate([
-          '/login'
-        ]);
+        this.router.navigate(['/login']);
 
 
       }

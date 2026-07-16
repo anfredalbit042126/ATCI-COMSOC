@@ -1,18 +1,7 @@
-import {
-  Component
-} from '@angular/core';
-
-import {
-  CommonModule
-} from '@angular/common';
-
-import {
-  FormsModule
-} from '@angular/forms';
-
-import {
-  Router
-} from '@angular/router';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import {
   collection,
@@ -21,35 +10,22 @@ import {
   where
 } from 'firebase/firestore';
 
-import {
-  db
-} from './../../firebase';
+import Swal from 'sweetalert2';
 
+import { db } from './../../firebase';
 
-/* ==================================================
-   User Interface
-================================================== */
 
 interface UserAccount {
 
   firstName: string;
-
   lastName: string;
-
   middleName?: string;
-
   role: string;
-
   pin: string;
-
   position?: string;
 
 }
 
-
-/* ==================================================
-   Component
-================================================== */
 
 @Component({
 
@@ -63,7 +39,6 @@ interface UserAccount {
   ],
 
   templateUrl: './login.html',
-
   styleUrl: './login.css'
 
 })
@@ -72,20 +47,256 @@ interface UserAccount {
 export class Login {
 
 
-  /* ==================================================
-     Constructor
-  ================================================== */
+  isLoading = false;
+
+  pin = '';
+
 
   constructor(
     private router: Router
   ) {
 
-
-    // Redirect if already logged in
-
-    if (localStorage.getItem('user')) {
+    if(localStorage.getItem('user')) {
 
       this.router.navigate(['/']);
+
+    }
+
+  }
+
+
+  async login() {
+
+
+    if(this.isLoading) return;
+
+
+    if(!/^[0-9]{6}$/.test(this.pin)) {
+
+
+      Swal.fire({
+
+        icon:'warning',
+
+        title:'Invalid PIN',
+
+        text:'PIN must be exactly 6 digits.',
+
+        confirmButtonColor:'#2563EB'
+
+      });
+
+
+      return;
+
+    }
+
+
+    this.isLoading = true;
+
+
+    Swal.fire({
+
+      title:'Checking account...',
+
+      text:'Please wait',
+
+      allowOutsideClick:false,
+
+      allowEscapeKey:false,
+
+      didOpen:()=>{
+
+        Swal.showLoading();
+
+      }
+
+    });
+
+
+
+    try {
+
+
+      // ADMIN
+
+      const adminSnap = await getDocs(
+
+        query(
+
+          collection(db,'admins'),
+
+          where('pin','==',this.pin)
+
+        )
+
+      );
+
+
+      if(!adminSnap.empty) {
+
+
+        const admin =
+        adminSnap.docs[0].data() as UserAccount;
+
+
+        this.saveUser({
+
+          id: adminSnap.docs[0].id,
+
+          firstName:admin.firstName,
+
+          lastName:admin.lastName,
+
+          role:admin.role
+
+        });
+
+
+        await this.successLogin(admin.firstName);
+
+        return;
+
+      }
+
+
+
+      // OFFICER
+
+      const officerSnap = await getDocs(
+
+        query(
+
+          collection(db,'officers'),
+
+          where('pin','==',this.pin)
+
+        )
+
+      );
+
+
+      if(!officerSnap.empty) {
+
+
+        const officer =
+        officerSnap.docs[0].data() as UserAccount;
+
+
+        this.saveUser({
+
+          id: officerSnap.docs[0].id,
+
+          firstName:officer.firstName,
+
+          lastName:officer.lastName,
+
+          role:officer.role,
+
+          position:officer.position
+
+        });
+
+
+        await this.successLogin(officer.firstName);
+
+        return;
+
+      }
+
+
+
+
+      // MEMBER
+
+      const memberSnap = await getDocs(
+
+        query(
+
+          collection(db,'members'),
+
+          where('pin','==',this.pin)
+
+        )
+
+      );
+
+
+      if(!memberSnap.empty) {
+
+
+        const member =
+        memberSnap.docs[0].data() as UserAccount;
+
+
+        this.saveUser({
+
+          firstName:member.firstName,
+
+          lastName:member.lastName,
+
+          role:member.role
+
+        });
+
+
+        await this.successLogin(member.firstName);
+
+        return;
+
+      }
+
+
+
+      // INVALID PIN
+
+      Swal.close();
+
+
+      this.isLoading = false;
+
+
+      Swal.fire({
+
+        icon:'error',
+
+        title:'Login Failed',
+
+        text:'Incorrect PIN. Please try again.',
+
+        confirmButtonColor:'#DC2626'
+
+      });
+
+
+
+    }
+
+
+    catch(error) {
+
+
+      console.error(error);
+
+
+      Swal.close();
+
+
+      this.isLoading = false;
+
+
+      Swal.fire({
+
+        icon:'error',
+
+        title:'Something went wrong',
+
+        text:'Unable to login. Please try again.',
+
+        confirmButtonColor:'#DC2626'
+
+      });
+
 
     }
 
@@ -94,233 +305,49 @@ export class Login {
 
 
 
-  /* ==================================================
-     Properties
-  ================================================== */
+  saveUser(user:any) {
 
-  pin = '';
 
+    localStorage.setItem(
 
+      'user',
 
-  /* ==================================================
-     Login Authentication
-  ================================================== */
+      JSON.stringify(user)
 
-  async login() {
+    );
 
 
-    if (this.pin.length !== 6) {
+  }
 
-      alert('PIN must be exactly 6 digits');
 
-      return;
 
-    }
 
+  async successLogin(name:string) {
 
 
-    try {
+    this.isLoading = false;
 
 
-      /* ==============================================
-         Check Admin Account
-      ============================================== */
+    await Swal.fire({
 
+      icon:'success',
 
-      const adminSnap = await getDocs(
+      title:`Welcome ${name}`,
 
-        query(
+      text:'Login successful',
 
-          collection(db, 'admins'),
+      timer:800,
 
-          where('pin', '==', this.pin)
+      timerProgressBar:true,
 
-        )
+      showConfirmButton:false,
 
-      );
+      allowOutsideClick:false
 
+    });
 
-      if (!adminSnap.empty) {
 
-
-        const admin =
-          adminSnap.docs[0].data() as UserAccount;
-
-
-
-        localStorage.setItem(
-
-          'user',
-
-          JSON.stringify({
-
-            firstName: admin.firstName,
-
-            lastName: admin.lastName,
-
-            role: admin.role
-
-          })
-
-        );
-
-
-
-        alert(
-          `Welcome ${admin.firstName}`
-        );
-
-
-
-        this.router.navigate(['/']);
-
-        return;
-
-      }
-
-
-
-
-      /* ==============================================
-         Check Officer Account
-      ============================================== */
-
-
-      const officerSnap = await getDocs(
-
-        query(
-
-          collection(db, 'officers'),
-
-          where('pin', '==', this.pin)
-
-        )
-
-      );
-
-
-
-      if (!officerSnap.empty) {
-
-
-        const officer =
-          officerSnap.docs[0].data() as UserAccount;
-
-
-
-        localStorage.setItem(
-
-          'user',
-
-          JSON.stringify({
-
-            firstName: officer.firstName,
-
-            lastName: officer.lastName,
-
-            role: officer.role,
-
-            position: officer.position
-
-          })
-
-        );
-
-
-
-        alert(
-          `Welcome ${officer.firstName}`
-        );
-
-
-
-        this.router.navigate(['/']);
-
-        return;
-
-      }
-
-
-
-
-      /* ==============================================
-         Check Member Account
-      ============================================== */
-
-
-      const memberSnap = await getDocs(
-
-        query(
-
-          collection(db, 'members'),
-
-          where('pin', '==', this.pin)
-
-        )
-
-      );
-
-
-
-      if (!memberSnap.empty) {
-
-
-        const member =
-          memberSnap.docs[0].data() as UserAccount;
-
-
-
-        localStorage.setItem(
-
-          'user',
-
-          JSON.stringify({
-
-            firstName: member.firstName,
-
-            lastName: member.lastName,
-
-            role: member.role
-
-          })
-
-        );
-
-
-
-        alert(
-          `Welcome ${member.firstName}`
-        );
-
-
-
-        this.router.navigate(['/']);
-
-        return;
-
-      }
-
-
-
-
-      /* ==============================================
-         Invalid Login
-      ============================================== */
-
-
-      alert('Invalid PIN');
-
-
-
-    } catch (error) {
-
-
-      console.error(error);
-
-      alert('Login failed');
-
-
-    }
+    this.router.navigate(['/']);
 
 
   }
