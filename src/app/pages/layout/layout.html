@@ -1,119 +1,149 @@
+<!-- Mobile Burger Button -->
+<button
+    class="burger"
+    (click)="toggleSidebar()">
+
+    ☰
+
+</button>
+
+
 <section class="layout">
 
-    <!-- ==================================================
-         Sidebar
-    ================================================== -->
 
-    <!-- Mobile Burger Button -->
-    <button
-        class="burger"
-        (click)="toggleSidebar()">
-
-        ☰
-
-    </button>
+    <!-- Sidebar -->
 
     <aside
-    class="sidebar"
-    [class.open]="sidebarOpen">
+        class="sidebar"
+        [class.open]="sidebarOpen">
 
-    <!-- Logo -->
-    <a
-        class="logo"
-        routerLink="/"
+
+        <!-- Logo -->
+
+        <a
+            class="logo"
+            routerLink="/"
+            (click)="closeSidebar()">
+
+
+            <img
+                src="/images/comsoc-logo.png"
+                alt="Com Soc">
+
+
+        </a>
+
+
+
+        <!-- Navigation -->
+
+        <ul class="nav-links">
+
+
+            <li>
+
+                <a
+                    routerLink="/"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{exact:true}"
+                    (click)="closeSidebar()">
+
+                    🏠 Dashboard
+
+                </a>
+
+            </li>
+
+
+
+            <li>
+
+                <a
+                    routerLink="/member"
+                    routerLinkActive="active"
+                    (click)="closeSidebar()">
+
+                    👥 Members
+
+                </a>
+
+            </li>
+
+
+
+            <li *ngIf="isAdmin()">
+
+                <a
+                    routerLink="/officer"
+                    routerLinkActive="active"
+                    (click)="closeSidebar()">
+
+                    👮 Officers
+
+                </a>
+
+            </li>
+
+
+
+            <li>
+
+                <a
+                    routerLink="/profile"
+                    routerLinkActive="active"
+                    (click)="closeSidebar()">
+
+                    👤 Profile
+
+                </a>
+
+            </li>
+
+
+
+            <li>
+
+                <a
+                    href="#"
+                    (click)="logout(); $event.preventDefault()">
+
+                    🚪 Logout
+
+                </a>
+
+            </li>
+
+
+        </ul>
+
+
+    </aside>
+
+
+
+    <!-- Mobile Overlay -->
+
+    <div
+        class="overlay"
+        *ngIf="sidebarOpen"
         (click)="closeSidebar()">
 
-        <img
-            src="/images/comsoc-logo.png"
-            alt="Com Soc">
-
-    </a>
+    </div>
 
 
-    <ul class="nav-links">
 
-        <li>
-            <a
-                routerLink="/"
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact:true }"
-                (click)="closeSidebar()">
-
-                🏠 Dashboard
-
-            </a>
-        </li>
-
-
-        <li>
-            <a
-                routerLink="/member"
-                routerLinkActive="active"
-                (click)="closeSidebar()">
-
-                👥 Members
-
-            </a>
-        </li>
-
-
-        <li *ngIf="isAdmin()">
-
-            <a
-                routerLink="/officer"
-                routerLinkActive="active"
-                (click)="closeSidebar()">
-
-                👮 Officers
-
-            </a>
-
-        </li>
-
-
-        <li>
-
-            <a
-                routerLink="/profile"
-                routerLinkActive="active"
-                (click)="closeSidebar()">
-
-                👤 Profile
-
-            </a>
-
-        </li>
-
-
-        <li>
-
-            <a
-                href="#"
-                (click)="logout(); $event.preventDefault()">
-
-                🚪 Logout
-
-            </a>
-
-        </li>
-
-
-    </ul>
-
-</aside>
-
-
-    <!-- ==================================================
-         Main Content
-    ================================================== -->
+    <!-- Main Content -->
 
     <div class="content">
+
 
         <main>
 
             <router-outlet></router-outlet>
 
+
         </main>
+
 
     </div>
 
