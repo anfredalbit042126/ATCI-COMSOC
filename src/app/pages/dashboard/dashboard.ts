@@ -27,105 +27,146 @@ import { db } from './../../firebase';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
+
 export class Dashboard implements OnInit {
 
-  constructor(
-    private cdr: ChangeDetectorRef
-  ) {}
+    /* ==================================================
+       Constructor
+    ================================================== */
 
-  totalMembers = 0;
-  totalOfficers = 0;
+    constructor(
+        private cdr: ChangeDetectorRef
+    ) {}
 
-  latestMember = '-';
-  latestOfficer = '-';
+    /* ==================================================
+       Properties
+    ================================================== */
 
-  courses = 5;
-  yearLevels = 4;
+    totalMembers = 0;
+    totalOfficers = 0;
 
-  async ngOnInit() {
+    latestMember = '-';
+    latestOfficer = '-';
 
-    await Promise.all([
-      this.loadMembers(),
-      this.loadOfficers()
-    ]);
+    courses = 5;
+    yearLevels = 4;
 
-    // Refresh the UI
-    this.cdr.detectChanges();
+    userRole = '';
 
-  }
+    /* ==================================================
+       Lifecycle
+    ================================================== */
 
-  async loadMembers() {
+    async ngOnInit() {
 
-    try {
+        const user = JSON.parse(
+            localStorage.getItem('user') || '{}'
+        );
 
-      const snapshot = await getDocs(
-        collection(db, 'members')
-      );
+        this.userRole = user.role || '';
 
-      console.log('Members count:', snapshot.size);
+        await Promise.all([
+            this.loadMembers(),
+            this.loadOfficers()
+        ]);
 
-      this.totalMembers = snapshot.size;
-
-      const latest = await getDocs(
-        query(
-          collection(db, 'members'),
-          orderBy('createdAt', 'desc'),
-          limit(1)
-        )
-      );
-
-      if (!latest.empty) {
-
-        const data: any = latest.docs[0].data();
-
-        this.latestMember =
-          `${data.firstName} ${data.lastName}`;
-
-      }
-
-    } catch (error) {
-
-      console.error('Members Error:', error);
+        this.cdr.detectChanges();
 
     }
 
-  }
+    /* ==================================================
+       Load Members
+    ================================================== */
 
-  async loadOfficers() {
+    async loadMembers() {
 
-    try {
+        try {
 
-      const snapshot = await getDocs(
-        collection(db, 'officers')
-      );
+            const snapshot = await getDocs(
+                collection(db, 'members')
+            );
 
-      console.log('Officers count:', snapshot.size);
+            console.log('Members count:', snapshot.size);
 
-      this.totalOfficers = snapshot.size;
+            this.totalMembers = snapshot.size;
 
-      const latest = await getDocs(
-        query(
-          collection(db, 'officers'),
-          orderBy('createdAt', 'desc'),
-          limit(1)
-        )
-      );
+            const latest = await getDocs(
 
-      if (!latest.empty) {
+                query(
+                    collection(db, 'members'),
+                    orderBy('createdAt', 'desc'),
+                    limit(1)
+                )
 
-        const data: any = latest.docs[0].data();
+            );
 
-        this.latestOfficer =
-          `${data.firstName} ${data.lastName}`;
+            if (!latest.empty) {
 
-      }
+                const data: any = latest.docs[0].data();
 
-    } catch (error) {
+                this.latestMember =
+                    `${data.firstName} ${data.lastName}`;
 
-      console.error('Officers Error:', error);
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Members Error:',
+                error
+            );
+
+        }
 
     }
 
-  }
+    /* ==================================================
+       Load Officers
+    ================================================== */
+
+    async loadOfficers() {
+
+        try {
+
+            const snapshot = await getDocs(
+                collection(db, 'officers')
+            );
+
+            console.log(
+                'Officers count:',
+                snapshot.size
+            );
+
+            this.totalOfficers = snapshot.size;
+
+            const latest = await getDocs(
+
+                query(
+                    collection(db, 'officers'),
+                    orderBy('createdAt', 'desc'),
+                    limit(1)
+                )
+
+            );
+
+            if (!latest.empty) {
+
+                const data: any = latest.docs[0].data();
+
+                this.latestOfficer =
+                    `${data.firstName} ${data.lastName}`;
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                'Officers Error:',
+                error
+            );
+
+        }
+
+    }
 
 }

@@ -1,6 +1,9 @@
 <section class="officers">
 
-    <!-- Header -->
+
+    <!-- ==================================================
+         HEADER
+    =================================================== -->
 
     <div class="officers-header">
 
@@ -14,120 +17,480 @@
 
     </div>
 
-    <!-- Add Officer -->
 
-    <div class="add-officer">
 
-        <h2>Add Officer</h2>
-
-        <div class="form">
-
-            <input
-                type="text"
-                placeholder="Last Name"
-                [(ngModel)]="newLastName">
-
-            <input
-                type="text"
-                placeholder="First Name"
-                [(ngModel)]="newFirstName">
-
-            <input
-                type="text"
-                placeholder="Middle Name (Optional)"
-                [(ngModel)]="newMiddleName">
-
-            <input
-                type="password"
-                maxlength="6"
-                placeholder="6 Digit PIN"
-                [(ngModel)]="newPin">
-
-            <select [(ngModel)]="newPosition">
-
-                <option value="">Select Position</option>
-
-                <option
-                    *ngFor="let position of positions"
-                    [value]="position">
-
-                    {{ position }}
-
-                </option>
-
-            </select>
-
-            <div class="add-button">
-
-                <button (click)="addOfficer()">
-                    Add Officer
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Search -->
+    <!-- ==================================================
+         SEARCH & ADD BUTTON
+    =================================================== -->
 
     <div class="filters">
 
+
         <div class="filter-group">
 
-            <label>Search Last Name</label>
+            <label>
+                Search Last Name
+            </label>
+
 
             <input
                 type="text"
                 placeholder="Enter last name..."
-                [(ngModel)]="search">
+                [(ngModel)]="search"
+                (ngModelChange)="currentPage = 1">
 
         </div>
 
+
+
+        <div
+            class="add-button"
+            *ngIf="!isOfficer">
+
+
+            <button
+                (click)="showAddModal = true">
+
+                Add Officer
+
+            </button>
+
+
+        </div>
+
+
     </div>
 
-    <!-- Officers Table -->
+
+
+
+    <!-- ==================================================
+         OFFICERS TABLE
+    =================================================== -->
+
 
     <div class="table-container">
 
+
         <table>
+
 
             <thead>
 
                 <tr>
+
                     <th>#</th>
-                    <th>Last Name</th>
-                    <th>First Name</th>
-                    <th>Middle Name</th>
-                    <th>Position</th>
+
+                    <th>
+                        Last Name
+                    </th>
+
+                    <th>
+                        First Name
+                    </th>
+
+                    <th>
+                        Middle Name
+                    </th>
+
+                    <th>
+                        Position
+                    </th>
+
+                    <th *ngIf="!isOfficer">
+                        Action
+                    </th>
+
                 </tr>
 
             </thead>
 
+
+
+
             <tbody>
 
-                <tr *ngFor="let officer of filteredOfficers(); let i = index">
 
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ officer.lastName }}</td>
-                    <td>{{ officer.firstName }}</td>
-                    <td>{{ officer.middleName || '-' }}</td>
-                    <td>{{ officer.position }}</td>
+                <tr
+                *ngFor="let officer of paginatedOfficers(); let i = index">
 
-                </tr>
 
-                <tr *ngIf="filteredOfficers().length === 0">
-
-                    <td colspan="5" class="empty">
-                        No officers found.
+                    <td>
+                        {{ (currentPage - 1) * itemsPerPage + i + 1 }}
                     </td>
 
+
+                    <td>
+                        {{ officer.lastName }}
+                    </td>
+
+
+                    <td>
+                        {{ officer.firstName }}
+                    </td>
+
+
+                    <td>
+                        {{ officer.middleName || '-' }}
+                    </td>
+
+
+                    <td>
+                        {{ officer.position }}
+                    </td>
+
+
+
+                    <!-- ACTION BUTTONS -->
+
+                    <td
+                    class="actions"
+                    *ngIf="!isOfficer">
+
+
+                        <button
+                        class="btn-edit"
+                        (click)="openEditModal(officer)">
+
+                            Update
+
+                        </button>
+
+
+
+                        <button
+                        class="btn-delete"
+                        (click)="deleteOfficer(officer)">
+
+                            Delete
+
+                        </button>
+
+
+                    </td>
+
+
                 </tr>
+
+
+
+
+                <!-- EMPTY DATA -->
+
+                <tr
+                *ngIf="paginatedOfficers().length === 0">
+
+
+                    <td
+                    class="empty"
+                    [attr.colspan]="isOfficer ? 5 : 6">
+
+                        No officers found.
+
+                    </td>
+
+
+                </tr>
+
+
 
             </tbody>
 
+
         </table>
 
+
     </div>
+
+
+
+
+
+    <!-- ==================================================
+         PAGINATION
+    =================================================== -->
+
+
+    <div
+    class="pagination"
+    *ngIf="filteredOfficers().length > itemsPerPage">
+
+
+        <button
+        (click)="previousPage()"
+        [disabled]="currentPage === 1">
+
+
+            Previous
+
+
+        </button>
+
+
+
+
+        <span>
+
+            Page {{ currentPage }} of {{ totalPages() }}
+
+        </span>
+
+
+
+
+        <button
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages()">
+
+
+
+            Next
+
+
+
+        </button>
+
+
+    </div>
+
+
+
+
+
+    <!-- ==================================================
+         ADD OFFICER MODAL
+    =================================================== -->
+
+
+    <div
+    class="modal"
+    *ngIf="showAddModal">
+
+
+        <div class="modal-content">
+
+
+            <h2>
+                Add Officer
+            </h2>
+
+
+
+            <input
+            type="text"
+            placeholder="Last Name"
+            [(ngModel)]="newLastName">
+
+
+
+            <input
+            type="text"
+            placeholder="First Name"
+            [(ngModel)]="newFirstName">
+
+
+
+            <input
+            type="text"
+            placeholder="Middle Name (Optional)"
+            [(ngModel)]="newMiddleName">
+
+
+
+            <input
+            type="password"
+            maxlength="6"
+            placeholder="6 Digit PIN"
+            [(ngModel)]="newPin">
+
+
+
+            <select
+            [(ngModel)]="newPosition">
+
+
+                <option value="">
+                    Select Position
+                </option>
+
+
+                <option
+                *ngFor="let position of positions"
+                [value]="position">
+
+
+                    {{ position }}
+
+
+                </option>
+
+
+            </select>
+
+
+
+
+            <div class="modal-buttons">
+
+
+                <button
+                class="btn-edit"
+                (click)="addOfficer()">
+
+
+                    Save
+
+
+                </button>
+
+
+
+
+                <button
+                class="btn-cancel"
+                (click)="showAddModal = false">
+
+
+                    Cancel
+
+
+                </button>
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- ==================================================
+         UPDATE OFFICER MODAL
+    =================================================== -->
+
+
+    <div
+    class="modal"
+    *ngIf="showEditModal">
+
+
+        <div class="modal-content">
+
+
+
+            <h2>
+                Update Officer
+            </h2>
+
+
+
+
+            <input
+            type="text"
+            placeholder="Last Name"
+            [(ngModel)]="editingOfficer.lastName">
+
+
+
+
+            <input
+            type="text"
+            placeholder="First Name"
+            [(ngModel)]="editingOfficer.firstName">
+
+
+
+
+            <input
+            type="text"
+            placeholder="Middle Name"
+            [(ngModel)]="editingOfficer.middleName">
+
+
+
+
+            <input
+            type="password"
+            maxlength="6"
+            placeholder="PIN"
+            [(ngModel)]="editingOfficer.pin">
+
+
+
+
+            <select
+            [(ngModel)]="editingOfficer.position">
+
+
+
+                <option
+                *ngFor="let position of positions"
+                [value]="position">
+
+
+                    {{ position }}
+
+
+                </option>
+
+
+            </select>
+
+
+
+
+            <div class="modal-buttons">
+
+
+
+                <button
+                class="btn-edit"
+                (click)="updateOfficer()">
+
+
+
+                    Save
+
+
+
+                </button>
+
+
+
+
+
+                <button
+                class="btn-cancel"
+                (click)="showEditModal = false">
+
+
+
+                    Cancel
+
+
+
+                </button>
+
+
+
+
+            </div>
+
+
+
+
+        </div>
+
+
+    </div>
+
+
 
 </section>

@@ -1,6 +1,9 @@
 <section class="members">
 
-    <!-- Header -->
+    <!-- ==================================================
+         Header
+    ================================================== -->
+
     <div class="members-header">
 
         <h1>
@@ -11,62 +14,16 @@
             Browse the list of COMSOC members. You can filter members by
             course and year level.
         </p>
-    </div>
-
-    <!-- Add Member -->
-
-    <div class="add-member">
-
-        <h2>Add Member</h2>
-
-        <div class="form">
-
-            <input
-                type="text"
-                placeholder="Last Name"
-                [(ngModel)]="newLastName">
-
-            <input
-                type="text"
-                placeholder="First Name"
-                [(ngModel)]="newFirstName">
-
-            <input
-                type="text"
-                placeholder="Middle Name (Optional)"
-                [(ngModel)]="newMiddleName">
-
-            <select [(ngModel)]="newCourse">
-                <option value="">Select Course</option>
-                <option
-                    *ngFor="let course of courses"
-                    [value]="course">
-                    {{ course }}
-                </option>
-            </select>
-
-            <select [(ngModel)]="newYear">
-                <option value="">Select Year Level</option>
-                <option
-                    *ngFor="let year of years"
-                    [value]="year">
-                    {{ year }}
-                </option>
-            </select>
-
-            <div class="add-button">
-                <button (click)="addMember()">
-                    Add Member
-                </button>
-            </div>
-
-        </div>
 
     </div>
 
-    <!-- Filters -->
+    <!-- ==================================================
+         Filters
+    ================================================== -->
 
     <div class="filters">
+
+        <!-- Course -->
 
         <div class="filter-group">
 
@@ -87,6 +44,8 @@
             </select>
 
         </div>
+
+        <!-- Year -->
 
         <div
             class="filter-group"
@@ -110,8 +69,7 @@
 
         </div>
 
-
-        <!-- Search by Last Name -->
+        <!-- Search -->
 
         <div class="filter-group">
 
@@ -124,9 +82,27 @@
 
         </div>
 
+        <!-- Add Button -->
+
+        <div class="filter-group add-member-btn">
+
+            <label>&nbsp;</label>
+
+            <button
+                class="btn-add"
+                (click)="showAddModal = true">
+
+                + Add Member
+
+            </button>
+
+        </div>
+
     </div>
 
-    <!-- Table -->
+    <!-- ==================================================
+         Members Table
+    ================================================== -->
 
     <div class="table-container">
 
@@ -141,51 +117,51 @@
                     <th>Middle Name</th>
                     <th>Course</th>
                     <th>Year Level</th>
-                    <th>Action</th>
+                    <th *ngIf="!isOfficer">Action</th>
                 </tr>
 
             </thead>
 
             <tbody>
 
-                <tr
-                    *ngFor="let member of filteredMembers(); let i = index">
+                <tr *ngFor="let member of paginatedMembers(); let i = index">
 
-                    <td>{{ i + 1 }}</td>
+                    <td>{{ (currentPage - 1) * rowsPerPage + i + 1 }}</td>
                     <td>{{ member.lastName }}</td>
                     <td>{{ member.firstName }}</td>
                     <td>{{ member.middleName || '-' }}</td>
                     <td>{{ member.course }}</td>
                     <td>{{ member.year }}</td>
 
-                    <td class="actions">
+                    <td
+                        class="actions"
+                        *ngIf="!isOfficer">
 
-                      <button
-                          class="btn-edit"
-                          (click)="openEditModal(member)">
+                        <button
+                            class="btn-edit"
+                            (click)="openEditModal(member)">
 
-                          Update
+                            Update
 
-                      </button>
+                        </button>
 
-                      <button
-                          class="btn-delete"
-                          (click)="deleteMember(member)">
+                        <button
+                            class="btn-delete"
+                            (click)="deleteMember(member)">
 
-                          Delete
+                            Delete
 
-                      </button>
+                        </button>
 
-                     </td>
-
+                    </td>
 
                 </tr>
 
                 <tr *ngIf="filteredMembers().length === 0">
 
                     <td
-                        colspan="6"
-                        class="empty">
+                        class="empty"
+                        [attr.colspan]="isOfficer ? 6 : 7">
 
                         No members found.
 
@@ -199,77 +175,188 @@
 
     </div>
 
-            <div
+    <!-- ==================================================
+         Pagination
+    ================================================== -->
+
+    <div class="pagination">
+
+        <button
+            (click)="previousPage()"
+            [disabled]="currentPage === 1">
+
+            Previous
+
+        </button>
+
+        <span>
+
+            Page {{ currentPage }} of {{ totalPages() }}
+
+        </span>
+
+        <button
+            (click)="nextPage()"
+            [disabled]="currentPage === totalPages()">
+
+            Next
+
+        </button>
+
+    </div>
+
+    <!-- ==================================================
+         Add Member Modal
+    ================================================== -->
+
+    <div
         class="modal"
-        *ngIf="showEditModal">
+        *ngIf="showAddModal">
 
         <div class="modal-content">
 
-        <h2>Update Member</h2>
+            <h2>Add Member</h2>
 
-        <input
-        type="text"
-        placeholder="Last Name"
-        [(ngModel)]="editingMember.lastName">
+            <input
+                type="text"
+                placeholder="Last Name"
+                [(ngModel)]="newLastName">
 
-        <input
-        type="text"
-        placeholder="First Name"
-        [(ngModel)]="editingMember.firstName">
+            <input
+                type="text"
+                placeholder="First Name"
+                [(ngModel)]="newFirstName">
 
-        <input
-        type="text"
-        placeholder="Middle Name"
-        [(ngModel)]="editingMember.middleName">
+            <input
+                type="text"
+                placeholder="Middle Name (Optional)"
+                [(ngModel)]="newMiddleName">
 
-        <select
-        [(ngModel)]="editingMember.course">
+            <select [(ngModel)]="newCourse">
 
-        <option
-        *ngFor="let course of courses"
-        [value]="course">
+                <option value="">Select Course</option>
 
-        {{course}}
+                <option
+                    *ngFor="let course of courses"
+                    [value]="course">
 
-        </option>
+                    {{ course }}
 
-        </select>
+                </option>
 
-        <select
-        [(ngModel)]="editingMember.year">
+            </select>
 
-        <option
-        *ngFor="let year of years"
-        [value]="year">
+            <select [(ngModel)]="newYear">
 
-        {{year}}
+                <option value="">Select Year Level</option>
 
-        </option>
+                <option
+                    *ngFor="let year of years"
+                    [value]="year">
 
-        </select>
+                    {{ year }}
 
-        <div class="modal-buttons">
+                </option>
 
-        <button
-        class="btn-edit"
-        (click)="updateMember()">
+            </select>
 
-        Save
+            <div class="modal-buttons">
 
-        </button>
+                <button
+                    class="btn-edit"
+                    (click)="addMember()">
 
-        <button
-        class="btn-cancel"
-        (click)="closeEditModal()">
+                    Save
 
-        Cancel
+                </button>
 
-        </button>
+                <button
+                    class="btn-cancel"
+                    (click)="showAddModal = false">
+
+                    Cancel
+
+                </button>
+
+            </div>
 
         </div>
 
-        </div>
+    </div>
+
+    <!-- ==================================================
+         Edit Member Modal
+    ================================================== -->
+
+    <div
+        class="modal"
+        *ngIf="showEditModal && !isOfficer">
+
+        <div class="modal-content">
+
+            <h2>Update Member</h2>
+
+            <input
+                type="text"
+                placeholder="Last Name"
+                [(ngModel)]="editingMember.lastName">
+
+            <input
+                type="text"
+                placeholder="First Name"
+                [(ngModel)]="editingMember.firstName">
+
+            <input
+                type="text"
+                placeholder="Middle Name"
+                [(ngModel)]="editingMember.middleName">
+
+            <select [(ngModel)]="editingMember.course">
+
+                <option
+                    *ngFor="let course of courses"
+                    [value]="course">
+
+                    {{ course }}
+
+                </option>
+
+            </select>
+
+            <select [(ngModel)]="editingMember.year">
+
+                <option
+                    *ngFor="let year of years"
+                    [value]="year">
+
+                    {{ year }}
+
+                </option>
+
+            </select>
+
+            <div class="modal-buttons">
+
+                <button
+                    class="btn-edit"
+                    (click)="updateMember()">
+
+                    Save
+
+                </button>
+
+                <button
+                    class="btn-cancel"
+                    (click)="closeEditModal()">
+
+                    Cancel
+
+                </button>
+
+            </div>
 
         </div>
+
+    </div>
 
 </section>

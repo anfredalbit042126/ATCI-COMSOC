@@ -1,8 +1,8 @@
 <section class="dashboard">
 
-    <!-- ==========================
+    <!-- ==================================================
          Header
-    =========================== -->
+    ================================================== -->
 
     <div class="dashboard-header">
 
@@ -15,9 +15,9 @@
 
     </div>
 
-    <!-- ==========================
+    <!-- ==================================================
          Statistics
-    =========================== -->
+    ================================================== -->
 
     <div class="stats">
 
@@ -29,7 +29,9 @@
 
         </div>
 
-        <div class="card">
+        <div
+            class="card"
+            *ngIf="userRole !== 'officer'">
 
             <h3>Total Officers</h3>
 
@@ -55,9 +57,9 @@
 
     </div>
 
-    <!-- ==========================
+    <!-- ==================================================
          Dashboard Overview
-    =========================== -->
+    ================================================== -->
 
     <div class="dashboard-grid">
 
@@ -89,7 +91,9 @@
 
         <!-- Latest Officer -->
 
-        <div class="panel">
+        <div
+            class="panel"
+            *ngIf="userRole !== 'officer'">
 
             <h2>Latest Officer</h2>
 
@@ -115,9 +119,9 @@
 
     </div>
 
-    <!-- ==========================
+    <!-- ==================================================
          System Summary
-    =========================== -->
+    ================================================== -->
 
     <div class="panel summary">
 
@@ -135,7 +139,7 @@
 
                 </tr>
 
-                <tr>
+                <tr *ngIf="userRole !== 'officer'">
 
                     <td>Total Officers</td>
 
@@ -165,9 +169,9 @@
 
     </div>
 
-    <!-- ==========================
+    <!-- ==================================================
          Quick Actions
-    =========================== -->
+    ================================================== -->
 
     <div class="quick-actions">
 
@@ -176,22 +180,31 @@
         <div class="actions">
 
             <a
-                routerLink="/member"
-                class="action">
+                class="action"
+                routerLink="/member">
 
-                <div class="icon">👥</div>
+                <div class="icon">
+                    👥
+                </div>
 
-                <span>Members</span>
+                <span>
+                    Members
+                </span>
 
             </a>
 
             <a
+                class="action"
                 routerLink="/officer"
-                class="action">
+                *ngIf="userRole !== 'officer'">
 
-                <div class="icon">🛡️</div>
+                <div class="icon">
+                    🛡️
+                </div>
 
-                <span>Officers</span>
+                <span>
+                    Officers
+                </span>
 
             </a>
 

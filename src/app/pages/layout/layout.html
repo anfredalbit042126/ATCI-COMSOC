@@ -1,48 +1,108 @@
-<div class="layout">
+<section class="layout">
+
+    <!-- ==================================================
+         Sidebar
+    ================================================== -->
 
     <aside class="sidebar">
 
-        <a routerLink="/" class="logo">
-            <img src="/images/comsoc-logo.png" alt="Com Soc">
+        <!-- Logo -->
+
+        <a
+            class="logo"
+            routerLink="/">
+
+            <img
+                src="/images/comsoc-logo.png"
+                alt="Com Soc">
+
         </a>
+
+
+        <!-- Navigation -->
 
         <ul class="nav-links">
 
+
+            <!-- Dashboard -->
+
             <li>
-                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+
+                <a
+                    routerLink="/"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }">
+
                     🏠 Dashboard
+
                 </a>
+
             </li>
 
-            <!-- Everyone can see -->
+
+            <!-- Members (Everyone) -->
+
             <li>
-                <a routerLink="/member" routerLinkActive="active">
+
+                <a
+                    routerLink="/member"
+                    routerLinkActive="active">
+
                     👥 Members
+
                 </a>
+
             </li>
 
-            <!-- Only Admin -->
+
+            <!-- Officers (Admin Only) -->
+
             <li *ngIf="isAdmin()">
-                <a routerLink="/officer" routerLinkActive="active">
+
+                <a
+                    routerLink="/officer"
+                    routerLinkActive="active">
+
                     👮 Officers
+
                 </a>
+
             </li>
 
+
+            <!-- Logout -->
 
             <li>
-                <a href="#" (click)="logout(); $event.preventDefault()">
+
+                <a
+                    href="#"
+                    (click)="logout(); $event.preventDefault()">
+
                     🚪 Logout
+
                 </a>
+
             </li>
+
 
         </ul>
 
     </aside>
 
+
+    <!-- ==================================================
+         Main Content
+    ================================================== -->
+
     <div class="content">
+
         <main>
+
             <router-outlet></router-outlet>
+
         </main>
+
     </div>
 
-</div>
+
+</section>

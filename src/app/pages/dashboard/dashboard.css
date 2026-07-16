@@ -1,16 +1,16 @@
-/* ==========================
-   Dashboard
-========================== */
+/* ==================================================
+   PAGE
+================================================== */
 
 .dashboard {
-    background: #F8FAFC;
     min-height: 100vh;
     padding: 40px;
+    background: #F8FAFC;
 }
 
-/* ==========================
-   Header
-========================== */
+/* ==================================================
+   HEADER
+================================================== */
 
 .dashboard-header {
     margin-bottom: 30px;
@@ -23,14 +23,14 @@
 }
 
 .dashboard-header p {
-    color: #64748B;
     max-width: 650px;
+    color: #64748B;
     line-height: 1.6;
 }
 
-/* ==========================
-   Statistics
-========================== */
+/* ==================================================
+   STATISTICS
+================================================== */
 
 .stats {
     display: grid;
@@ -40,9 +40,9 @@
 }
 
 .card {
+    padding: 25px;
     background: #FFFFFF;
     border-radius: 12px;
-    padding: 25px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
     transition: .2s;
 }
@@ -63,9 +63,9 @@
     color: #2563EB;
 }
 
-/* ==========================
-   Dashboard Grid
-========================== */
+/* ==================================================
+   DASHBOARD GRID
+================================================== */
 
 .dashboard-grid {
     display: grid;
@@ -74,14 +74,14 @@
     margin-bottom: 30px;
 }
 
-/* ==========================
-   Panels
-========================== */
+/* ==================================================
+   PANELS
+================================================== */
 
 .panel {
+    padding: 25px;
     background: #FFFFFF;
     border-radius: 12px;
-    padding: 25px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
 }
 
@@ -91,9 +91,9 @@
     color: #0F172A;
 }
 
-/* ==========================
-   Info Box
-========================== */
+/* ==================================================
+   INFORMATION BOX
+================================================== */
 
 .info-box {
     display: flex;
@@ -102,14 +102,14 @@
 }
 
 .info-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 65px;
     height: 65px;
-    border-radius: 50%;
     background: #2563EB;
     color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border-radius: 50%;
     font-size: 28px;
 }
 
@@ -124,9 +124,9 @@
     line-height: 1.5;
 }
 
-/* ==========================
-   Summary Table
-========================== */
+/* ==================================================
+   SUMMARY TABLE
+================================================== */
 
 .summary {
     margin-bottom: 30px;
@@ -153,18 +153,18 @@
 
 .summary td:last-child {
     text-align: right;
-    font-weight: bold;
+    font-weight: 700;
     color: #2563EB;
 }
 
-/* ==========================
-   Quick Actions
-========================== */
+/* ==================================================
+   QUICK ACTIONS
+================================================== */
 
 .quick-actions {
+    padding: 25px;
     background: #FFFFFF;
     border-radius: 12px;
-    padding: 25px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
 }
 
@@ -179,12 +179,12 @@
 }
 
 .action {
+    padding: 25px;
     background: #2563EB;
     color: #FFFFFF;
+    text-align: center;
     text-decoration: none;
     border-radius: 12px;
-    padding: 25px;
-    text-align: center;
     transition: .2s;
 }
 
@@ -204,9 +204,9 @@
     font-weight: 600;
 }
 
-/* ==========================
-   Tablet
-========================== */
+/* ==================================================
+   TABLET
+================================================== */
 
 @media (max-width: 992px) {
 
@@ -216,9 +216,9 @@
 
 }
 
-/* ==========================
-   Mobile
-========================== */
+/* ==================================================
+   MOBILE
+================================================== */
 
 @media (max-width: 768px) {
 
@@ -267,9 +267,9 @@
 
 }
 
-/* ==========================
-   Small Phones
-========================== */
+/* ==================================================
+   SMALL PHONES
+================================================== */
 
 @media (max-width: 480px) {
 

@@ -1,18 +1,18 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import Swal from 'sweetalert2';
 
-
 import {
-  collection,
   addDoc,
-  getDocs,
-  query,
-  orderBy,
-  updateDoc,
+  collection,
   deleteDoc,
-  doc
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc
 } from 'firebase/firestore';
 
 import { db } from './../../firebase';
@@ -27,21 +27,63 @@ import { db } from './../../firebase';
   templateUrl: './member.html',
   styleUrl: './member.css'
 })
+
 export class Member implements OnInit {
 
-    constructor(private cdr: ChangeDetectorRef) {}
+  /* ==================================================
+     Constructor
+  ================================================== */
+
+  constructor(
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  /* ==================================================
+     Filters
+  ================================================== */
 
   selectedCourse = '';
   selectedYear = '';
+  searchLastName = '';
+
+  /* ==================================================
+     Add Member Form
+  ================================================== */
 
   newLastName = '';
   newFirstName = '';
   newMiddleName = '';
   newCourse = '';
   newYear = '';
+
   role = 'member';
 
-  searchLastName = '';
+  /* ==================================================
+     Page State
+  ================================================== */
+
+  isOfficer = false;
+
+  showAddModal = false;
+  showEditModal = false;
+
+  currentPage = 1;
+  rowsPerPage = 10;
+
+  /* ==================================================
+     Data
+  ================================================== */
+
+  members: any[] = [];
+
+  editingMember: any = {
+    id: '',
+    lastName: '',
+    firstName: '',
+    middleName: '',
+    course: '',
+    year: ''
+  };
 
   courses = [
     'BSIT',
@@ -58,333 +100,394 @@ export class Member implements OnInit {
     '4th Year'
   ];
 
-  editingMember: any = {
-  id: '',
-  lastName: '',
-  firstName: '',
-  middleName: '',
-  course: '',
-  year: ''
-  };
-
-  showEditModal = false;
-
-  members: any[] = [];
+  /* ==================================================
+     Lifecycle
+  ================================================== */
 
   async ngOnInit() {
-  await this.loadMembers();
-}
-  async loadMembers() {
-  try {
 
-    const q = query(
-      collection(db, 'members'),
-      orderBy('createdAt', 'desc')
+    const user = JSON.parse(
+      localStorage.getItem('user') || '{}'
     );
 
-    const snapshot = await getDocs(q);
-
-    const data = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    this.members = data;
-
-    // Force UI update
-    this.cdr.detectChanges();
-
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-  filteredMembers() {
-
-  return this.members.filter(member => {
-
-    const courseMatch =
-      !this.selectedCourse ||
-      member.course === this.selectedCourse;
-
-    const yearMatch =
-      !this.selectedYear ||
-      member.year === this.selectedYear;
-
-    const lastNameMatch =
-      !this.searchLastName ||
-      member.lastName
-        .toLowerCase()
-        .includes(this.searchLastName.toLowerCase());
-
-    return courseMatch && yearMatch && lastNameMatch;
-
-  });
-
-}
-
-    async addMember() {
-
-  if (
-    this.newLastName.trim() === '' ||
-    this.newFirstName.trim() === '' ||
-    this.newCourse === '' ||
-    this.newYear === ''
-  ) {
-
-    Swal.fire({
-      icon: 'warning',
-      title: 'Incomplete Information',
-      text: 'Please complete all required fields.'
-    });
-
-    return;
-
-  }
-
-  const result = await Swal.fire({
-    title: 'Add Member?',
-    text: 'Are you sure you want to add this member?',
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, Add',
-    cancelButtonText: 'Cancel',
-    confirmButtonColor: '#2563EB',
-    cancelButtonColor: '#64748B'
-  });
-
-  if (!result.isConfirmed) {
-    return;
-  }
-
-  try {
-
-    await addDoc(collection(db, 'members'), {
-
-      lastName: this.newLastName.trim(),
-      firstName: this.newFirstName.trim(),
-      middleName: this.newMiddleName.trim(),
-
-      course: this.newCourse,
-      year: this.newYear,
-
-      role: this.role,
-
-      createdAt: new Date()
-
-    });
-
-    this.newLastName = '';
-    this.newFirstName = '';
-    this.newMiddleName = '';
-    this.newCourse = '';
-    this.newYear = '';
+    this.isOfficer = user.role === 'officer';
 
     await this.loadMembers();
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Member Added!',
-      text: 'The member has been added successfully.',
-      confirmButtonColor: '#2563EB'
-    });
+  }
 
-  } catch (error) {
+  /* ==================================================
+     Load Members
+  ================================================== */
 
-    console.error(error);
+  async loadMembers() {
 
-    Swal.fire({
-      icon: 'error',
-      title: 'Failed',
-      text: 'Unable to add the member.'
-    });
+    try {
+
+      const q = query(
+        collection(db, 'members'),
+        orderBy('createdAt', 'desc')
+      );
+
+      const snapshot = await getDocs(q);
+
+      this.members = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      this.cdr.detectChanges();
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+    }
 
   }
 
-}
+  /* ==================================================
+     Add Member
+  ================================================== */
 
-openEditModal(member: any) {
+  async addMember() {
 
-  this.editingMember = {
-    ...member
-  };
+    if (
+      this.newLastName.trim() === '' ||
+      this.newFirstName.trim() === '' ||
+      this.newCourse === '' ||
+      this.newYear === ''
+    ) {
 
-  this.showEditModal = true;
+      Swal.fire({
+        icon: 'warning',
+        title: 'Incomplete Information',
+        text: 'Please complete all required fields.'
+      });
 
-}
+      return;
 
-async updateMember() {
+    }
 
-  const result = await Swal.fire({
+    const result = await Swal.fire({
 
-    title: 'Update Member?',
-    text: 'Save the changes?',
-    icon: 'question',
+      title: 'Add Member?',
+      text: 'Are you sure you want to add this member?',
+      icon: 'question',
 
-    showCancelButton: true,
+      showCancelButton: true,
 
-    confirmButtonText: 'Update',
-    cancelButtonText: 'Cancel',
+      confirmButtonText: 'Yes, Add',
+      cancelButtonText: 'Cancel',
 
-    confirmButtonColor: '#2563EB'
-
-  });
-
-  if (!result.isConfirmed) return;
-
-  try {
-
-    const ref = doc(
-      db,
-      'members',
-      this.editingMember.id
-    );
-
-    await updateDoc(ref, {
-
-      lastName: this.editingMember.lastName.trim(),
-
-      firstName: this.editingMember.firstName.trim(),
-
-      middleName: this.editingMember.middleName.trim(),
-
-      course: this.editingMember.course,
-
-      year: this.editingMember.year
+      confirmButtonColor: '#2563EB',
+      cancelButtonColor: '#64748B'
 
     });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    try {
+
+      await addDoc(
+        collection(db, 'members'),
+        {
+          lastName: this.newLastName.trim(),
+          firstName: this.newFirstName.trim(),
+          middleName: this.newMiddleName.trim(),
+
+          course: this.newCourse,
+          year: this.newYear,
+
+          role: this.role,
+
+          createdAt: new Date()
+        }
+      );
+
+      this.newLastName = '';
+      this.newFirstName = '';
+      this.newMiddleName = '';
+      this.newCourse = '';
+      this.newYear = '';
+
+      this.showAddModal = false;
+
+      await this.loadMembers();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Member Added!',
+        text: 'The member has been added successfully.',
+        confirmButtonColor: '#2563EB'
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed',
+        text: 'Unable to add the member.'
+      });
+
+    }
+
+  }
+
+  /* ==================================================
+     Update Member
+  ================================================== */
+
+  openEditModal(member: any) {
+
+    this.editingMember = {
+      ...member
+    };
+
+    this.showEditModal = true;
+
+  }
+
+  closeEditModal() {
 
     this.showEditModal = false;
 
-    await this.loadMembers();
+  }
 
-    Swal.fire({
+  async updateMember() {
 
-      icon:'success',
+    const result = await Swal.fire({
 
-      title:'Updated',
+      title: 'Update Member?',
+      text: 'Save the changes?',
+      icon: 'question',
 
-      text:'Member updated successfully.'
+      showCancelButton: true,
+
+      confirmButtonText: 'Update',
+      cancelButtonText: 'Cancel',
+
+      confirmButtonColor: '#2563EB'
+
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    try {
+
+      const ref = doc(
+        db,
+        'members',
+        this.editingMember.id
+      );
+
+      await updateDoc(ref, {
+
+        lastName: this.editingMember.lastName.trim(),
+        firstName: this.editingMember.firstName.trim(),
+        middleName: this.editingMember.middleName.trim(),
+
+        course: this.editingMember.course,
+        year: this.editingMember.year
+
+      });
+
+      this.showEditModal = false;
+
+      await this.loadMembers();
+
+      Swal.fire({
+
+        icon: 'success',
+        title: 'Updated',
+        text: 'Member updated successfully.'
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      Swal.fire({
+
+        icon: 'error',
+        title: 'Update Failed'
+
+      });
+
+    }
+
+  }
+
+  /* ==================================================
+     Delete Member
+  ================================================== */
+
+  async deleteMember(member: any) {
+
+    const result = await Swal.fire({
+
+      title: 'Delete Member',
+
+      html: `
+        <p>
+          Type <b>DELETE</b> below to permanently remove
+          <b>${member.firstName} ${member.lastName}</b>
+        </p>
+
+        <input
+          id="confirmDelete"
+          class="swal2-input"
+          placeholder="Type DELETE">
+      `,
+
+      icon: 'warning',
+
+      showCancelButton: true,
+
+      confirmButtonText: 'Delete',
+      confirmButtonColor: '#DC2626',
+
+      preConfirm: () => {
+
+        const value = (
+          document.getElementById('confirmDelete') as HTMLInputElement
+        ).value;
+
+        if (value !== 'DELETE') {
+
+          Swal.showValidationMessage(
+            'Please type DELETE'
+          );
+
+        }
+
+        return value;
+
+      }
+
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    try {
+
+      await deleteDoc(
+        doc(db, 'members', member.id)
+      );
+
+      await this.loadMembers();
+
+      Swal.fire({
+
+        icon: 'success',
+        title: 'Deleted',
+        text: 'Member removed successfully.'
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      Swal.fire({
+
+        icon: 'error',
+        title: 'Delete Failed'
+
+      });
+
+    }
+
+  }
+
+  /* ==================================================
+     Filters
+  ================================================== */
+
+  filteredMembers() {
+
+    return this.members.filter(member => {
+
+      const courseMatch =
+        !this.selectedCourse ||
+        member.course === this.selectedCourse;
+
+      const yearMatch =
+        !this.selectedYear ||
+        member.year === this.selectedYear;
+
+      const lastNameMatch =
+        !this.searchLastName ||
+        member.lastName
+          .toLowerCase()
+          .includes(this.searchLastName.toLowerCase());
+
+      return (
+        courseMatch &&
+        yearMatch &&
+        lastNameMatch
+      );
 
     });
 
   }
 
-  catch(error){
+  /* ==================================================
+     Pagination
+  ================================================== */
 
-    console.error(error);
+  paginatedMembers() {
 
-    Swal.fire({
+    const start =
+      (this.currentPage - 1) * this.rowsPerPage;
 
-      icon:'error',
-
-      title:'Update Failed'
-
-    });
+    return this.filteredMembers().slice(
+      start,
+      start + this.rowsPerPage
+    );
 
   }
 
-}
+  totalPages() {
 
-async deleteMember(member:any){
+    return Math.ceil(
+      this.filteredMembers().length /
+      this.rowsPerPage
+    );
 
-const result = await Swal.fire({
+  }
 
-title:'Delete Member',
+  nextPage() {
 
-html:`
+    if (this.currentPage < this.totalPages()) {
+      this.currentPage++;
+    }
 
-<p>
+  }
 
-Type
-<b>DELETE</b>
+  previousPage() {
 
-below to permanently remove
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
 
-<b>${member.firstName} ${member.lastName}</b>
-
-</p>
-
-<input id="confirmDelete"
-
-class="swal2-input"
-
-placeholder="Type DELETE">
-
-`,
-
-icon:'warning',
-
-showCancelButton:true,
-
-confirmButtonText:'Delete',
-
-confirmButtonColor:'#dc2626',
-
-preConfirm:()=>{
-
-const value=(document.getElementById(
-'confirmDelete'
-) as HTMLInputElement).value;
-
-if(value!=="DELETE"){
-
-Swal.showValidationMessage(
-'Please type DELETE'
-);
-
-}
-
-return value;
-
-}
-
-});
-
-if(!result.isConfirmed)return;
-
-try{
-
-await deleteDoc(
-
-doc(db,'members',member.id)
-
-);
-
-await this.loadMembers();
-
-Swal.fire({
-
-icon:'success',
-
-title:'Deleted',
-
-text:'Member removed successfully.'
-
-});
-
-}
-
-catch(error){
-
-console.error(error);
-
-Swal.fire({
-
-icon:'error',
-
-title:'Delete Failed'
-
-});
-
-}
-
-}
-
-closeEditModal() {
-
-  this.showEditModal = false;
-
-}
+  }
 
 }

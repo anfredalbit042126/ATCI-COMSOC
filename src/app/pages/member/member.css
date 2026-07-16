@@ -1,25 +1,25 @@
-/* ==========================
-   Page
-========================== */
+/* ==================================================
+   PAGE
+================================================== */
 
 .members {
-    background: #F8FAFC;
     min-height: 100vh;
     padding: 40px;
+    background: #F8FAFC;
 }
 
-/* ==========================
-   Header
-========================== */
+/* ==================================================
+   HEADER
+================================================== */
 
 .members-header {
     margin-bottom: 30px;
 }
 
 .subtitle {
+    margin-bottom: 8px;
     color: #2563EB;
     font-weight: 600;
-    margin-bottom: 8px;
 }
 
 .members-header h1 {
@@ -32,14 +32,14 @@
 }
 
 .description {
-    color: #64748B;
     max-width: 650px;
+    color: #64748B;
     line-height: 1.6;
 }
 
-/* ==========================
-   Cards
-========================== */
+/* ==================================================
+   CARDS
+================================================== */
 
 .add-member,
 .table-container {
@@ -49,17 +49,17 @@
 }
 
 .add-member {
-    padding: 25px;
     margin-bottom: 30px;
+    padding: 25px;
 }
 
 .add-member h2 {
     margin-bottom: 20px;
 }
 
-/* ==========================
-   Form
-========================== */
+/* ==================================================
+   FORM
+================================================== */
 
 .form {
     display: grid;
@@ -76,8 +76,8 @@
     outline: none;
     font-size: 15px;
     background: #FFFFFF;
-    transition: .2s;
     box-sizing: border-box;
+    transition: .2s;
 }
 
 .form input:focus,
@@ -85,35 +85,9 @@
     border-color: #2563EB;
 }
 
-/* ==========================
-   Add Button
-========================== */
-
-.add-button {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.add-button button {
-    padding: 13px 28px;
-    background: #2563EB;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    transition: .2s;
-}
-
-.add-button button:hover {
-    background: #1D4ED8;
-}
-
-/* ==========================
-   Filters
-========================== */
+/* ==================================================
+   FILTERS
+================================================== */
 
 .filters {
     display: flex;
@@ -133,8 +107,8 @@
     color: #1E293B;
 }
 
-.filter-group select,
-.filter-group input {
+.filter-group input,
+.filter-group select {
     width: 220px;
     padding: 12px;
     border: 1px solid #CBD5E1;
@@ -142,19 +116,67 @@
     outline: none;
     font-size: 15px;
     background: #FFFFFF;
-    transition: .2s;
     box-sizing: border-box;
+    transition: .2s;
 }
 
-.filter-group select:focus,
-.filter-group input:focus {
+.filter-group input:focus,
+.filter-group select:focus {
     border-color: #2563EB;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
 }
 
-/* ==========================
-   Table
-========================== */
+/* ==================================================
+   BUTTONS
+================================================== */
+
+.add-button {
+    display: flex;
+    justify-content: flex-end;
+    grid-column: 1 / -1;
+}
+
+.add-button button {
+    padding: 13px 28px;
+    border: none;
+    border-radius: 8px;
+    background: #2563EB;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.add-button button:hover {
+    background: #1D4ED8;
+}
+
+.add-member-btn {
+    margin-left: auto;
+    justify-content: flex-end;
+}
+
+.btn-add {
+    height: 46px;
+    padding: 0 22px;
+    border: none;
+    border-radius: 8px;
+    background: #2563EB;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn-add:hover {
+    background: #1D4ED8;
+}
+
+/* ==================================================
+   TABLE
+================================================== */
 
 .table-container {
     overflow-x: auto;
@@ -174,9 +196,9 @@ thead {
 th,
 td {
     padding: 15px;
-    border-bottom: 1px solid #E2E8F0;
     text-align: left;
     white-space: nowrap;
+    border-bottom: 1px solid #E2E8F0;
 }
 
 tbody tr:nth-child(even) {
@@ -188,61 +210,97 @@ tbody tr:hover {
 }
 
 .empty {
-    text-align: center;
     padding: 30px;
+    text-align: center;
     color: #64748B;
 }
 
-/* ==========================
-   Actions
-========================== */
+/* ==================================================
+   ACTION BUTTONS
+================================================== */
 
 .actions {
     display: flex;
     gap: 10px;
 }
 
-.btn-edit {
-    background: #2563EB;
-    color: #FFFFFF;
+.btn-edit,
+.btn-delete,
+.btn-cancel {
     border: none;
-    padding: 8px 14px;
     border-radius: 6px;
+    color: #FFFFFF;
     cursor: pointer;
+}
+
+.btn-edit {
+    padding: 8px 14px;
+    background: #2563EB;
 }
 
 .btn-delete {
-    background: #DC2626;
-    color: #FFFFFF;
-    border: none;
     padding: 8px 14px;
+    background: #DC2626;
+}
+
+.btn-cancel {
+    padding: 10px 18px;
+    background: #64748B;
+}
+
+/* ==================================================
+   PAGINATION
+================================================== */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.pagination button {
+    padding: 10px 18px;
+    border: none;
     border-radius: 6px;
+    background: #2563EB;
+    color: #FFFFFF;
     cursor: pointer;
 }
 
-/* ==========================
-   Modal
-========================== */
+.pagination button:disabled {
+    background: #CBD5E1;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    font-weight: 600;
+}
+
+/* ==================================================
+   MODAL
+================================================== */
 
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, .45);
 }
 
 .modal-content {
-    background: #FFFFFF;
-    width: 420px;
-    max-width: 95%;
-    padding: 25px;
-    border-radius: 12px;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    width: 420px;
+    max-width: 95%;
+    padding: 25px;
+    background: #FFFFFF;
+    border-radius: 12px;
 }
 
 .modal-content input,
@@ -258,18 +316,9 @@ tbody tr:hover {
     gap: 10px;
 }
 
-.btn-cancel {
-    background: #64748B;
-    color: #FFFFFF;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* ==========================
-   Tablet
-========================== */
+/* ==================================================
+   TABLET
+================================================== */
 
 @media (max-width: 992px) {
 
@@ -281,16 +330,16 @@ tbody tr:hover {
         flex: 1;
     }
 
-    .filter-group select,
-    .filter-group input {
+    .filter-group input,
+    .filter-group select {
         width: 100%;
     }
 
 }
 
-/* ==========================
-   Mobile
-========================== */
+/* ==================================================
+   MOBILE
+================================================== */
 
 @media (max-width: 768px) {
 
@@ -317,8 +366,8 @@ tbody tr:hover {
 
     .form input,
     .form select {
-        font-size: 14px;
         padding: 12px;
+        font-size: 14px;
     }
 
     .filters {
@@ -329,8 +378,8 @@ tbody tr:hover {
         width: 100%;
     }
 
-    .filter-group select,
-    .filter-group input {
+    .filter-group input,
+    .filter-group select {
         width: 100%;
     }
 
@@ -348,9 +397,9 @@ tbody tr:hover {
 
 }
 
-/* ==========================
-   Small Phones
-========================== */
+/* ==================================================
+   SMALL PHONES
+================================================== */
 
 @media (max-width: 480px) {
 
