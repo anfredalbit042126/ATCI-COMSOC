@@ -183,13 +183,30 @@ export class Member implements OnInit {
       cancelButtonText: 'Cancel',
 
       confirmButtonColor: '#2563EB',
-      cancelButtonColor: '#64748B'
+      cancelButtonColor: '#64748B',
+
+      allowOutsideClick: false,
+      allowEscapeKey: false
 
     });
 
     if (!result.isConfirmed) {
       return;
     }
+
+    /* Close the Angular modal immediately */
+    this.showAddModal = false;
+
+    /* Show loading dialog */
+    Swal.fire({
+      title: 'Saving...',
+      text: 'Please wait.',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
     try {
 
@@ -215,9 +232,9 @@ export class Member implements OnInit {
       this.newCourse = '';
       this.newYear = '';
 
-      this.showAddModal = false;
-
       await this.loadMembers();
+
+      Swal.close();
 
       Swal.fire({
         icon: 'success',
@@ -229,6 +246,8 @@ export class Member implements OnInit {
     }
 
     catch (error) {
+
+      Swal.close();
 
       console.error(error);
 

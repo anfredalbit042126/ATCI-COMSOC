@@ -277,6 +277,7 @@ export class Officer implements OnInit {
 
     heightAuto:false,
 
+
     didOpen: () => {
 
       Swal.getPopup()?.style.setProperty(
@@ -297,6 +298,19 @@ export class Officer implements OnInit {
   }
 
 
+    /* Close the Angular modal immediately */
+    this.showAddModal = false;
+
+    /* Show loading dialog */
+        Swal.fire({
+          title: 'Saving...',
+          text: 'Please wait.',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
 
   try{
 
@@ -332,12 +346,9 @@ export class Officer implements OnInit {
     this.newPosition='';
     this.newPin='';
 
-
-    this.showAddModal=false;
-
-
     await this.loadOfficers();
 
+    Swal.close();
 
     Swal.fire({
 
@@ -358,6 +369,8 @@ export class Officer implements OnInit {
   }
 
   catch(error){
+
+     Swal.close();
 
     console.error(error);
 
