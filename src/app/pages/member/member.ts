@@ -42,7 +42,9 @@ export class Member implements OnInit {
      Filters
   ================================================== */
 
+  selectedEducationLevel = '';
   selectedCourse = '';
+  selectedStrand = '';
   selectedYear = '';
   searchLastName = '';
 
@@ -53,7 +55,9 @@ export class Member implements OnInit {
   newLastName = '';
   newFirstName = '';
   newMiddleName = '';
+  newEducationLevel = '';
   newCourse = '';
+  newStrand = '';
   newYear = '';
 
   role = 'member';
@@ -81,7 +85,9 @@ export class Member implements OnInit {
     lastName: '',
     firstName: '',
     middleName: '',
+    educationLevel: '',
     course: '',
+    strand: '',
     year: ''
   };
 
@@ -89,16 +95,40 @@ export class Member implements OnInit {
     'BSIT',
     'BEED',
     'BSHM',
-    'BSBA',
-    'SHS'
+    'BSBA'
   ];
 
-  years = [
+  collegeYears = [
     '1st Year',
     '2nd Year',
     '3rd Year',
     '4th Year'
   ];
+
+  shsYears = [
+    'Grade 11',
+    'Grade 12'
+  ];
+
+  strands = [
+    'STEM',
+    'ABM',
+    'HUMSS',
+    'GAS',
+    'TVL'
+  ];
+
+  private collegeData = {
+  course: '',
+  year: ''
+  };
+
+  private shsData = {
+    strand: '',
+    year: ''
+  };
+
+  previousEducationLevel = '';
 
   /* ==================================================
      Lifecycle
@@ -155,10 +185,15 @@ export class Member implements OnInit {
   async addMember() {
 
     if (
-      this.newLastName.trim() === '' ||
-      this.newFirstName.trim() === '' ||
-      this.newCourse === '' ||
-      this.newYear === ''
+    this.newLastName.trim() === '' ||
+    this.newFirstName.trim() === '' ||
+    this.newEducationLevel === '' ||
+    this.newYear === '' ||
+    (
+        this.newEducationLevel === 'College'
+            ? this.newCourse === ''
+            : this.newStrand === ''
+    )
     ) {
 
       Swal.fire({
@@ -217,7 +252,17 @@ export class Member implements OnInit {
           firstName: this.newFirstName.trim(),
           middleName: this.newMiddleName.trim(),
 
-          course: this.newCourse,
+          educationLevel: this.newEducationLevel,
+
+          course:
+              this.newEducationLevel === 'College'
+                  ? this.newCourse
+                  : '',
+
+          strand:
+              this.newEducationLevel === 'SHS'
+                  ? this.newStrand
+                  : '',
           year: this.newYear,
 
           role: this.role,
@@ -229,7 +274,9 @@ export class Member implements OnInit {
       this.newLastName = '';
       this.newFirstName = '';
       this.newMiddleName = '';
+      this.newEducationLevel = '';
       this.newCourse = '';
+      this.newStrand = '';
       this.newYear = '';
 
       await this.loadMembers();
@@ -267,13 +314,28 @@ export class Member implements OnInit {
 
   openEditModal(member: any) {
 
-    this.editingMember = {
-      ...member
-    };
+  this.editingMember = { ...member };
 
-    this.showEditModal = true;
+  this.collegeData = {
+    course: member.course || '',
+    year: member.educationLevel === 'College'
+      ? member.year
+      : ''
+  };
 
-  }
+  this.shsData = {
+    strand: member.strand || '',
+    year: member.educationLevel === 'SHS'
+      ? member.year
+      : ''
+  };
+
+  // IMPORTANT
+  this.previousEducationLevel = member.educationLevel;
+
+  this.showEditModal = true;
+
+}
 
   closeEditModal() {
 
@@ -376,7 +438,17 @@ export class Member implements OnInit {
 
       middleName: this.editingMember.middleName.trim(),
 
-      course: this.editingMember.course,
+      educationLevel: this.editingMember.educationLevel,
+
+      course:
+      this.editingMember.educationLevel === 'College'
+          ? this.editingMember.course
+          : '',
+
+      strand:
+      this.editingMember.educationLevel === 'SHS'
+          ? this.editingMember.strand
+          : '',
 
       year: this.editingMember.year
 
@@ -520,29 +592,39 @@ export class Member implements OnInit {
 
     return this.members.filter(member => {
 
-      const courseMatch =
-        !this.selectedCourse ||
-        member.course === this.selectedCourse;
+        const educationMatch =
+            !this.selectedEducationLevel ||
+            member.educationLevel === this.selectedEducationLevel;
 
-      const yearMatch =
-        !this.selectedYear ||
-        member.year === this.selectedYear;
+        const courseMatch =
+            !this.selectedCourse ||
+            member.course === this.selectedCourse;
 
-      const lastNameMatch =
-        !this.searchLastName ||
-        member.lastName
-          .toLowerCase()
-          .includes(this.searchLastName.toLowerCase());
+        const strandMatch =
+            !this.selectedStrand ||
+            member.strand === this.selectedStrand;
 
-      return (
-        courseMatch &&
-        yearMatch &&
-        lastNameMatch
-      );
+        const yearMatch =
+            !this.selectedYear ||
+            member.year === this.selectedYear;
+
+        const lastNameMatch =
+            !this.searchLastName ||
+            member.lastName
+                .toLowerCase()
+                .includes(this.searchLastName.toLowerCase());
+
+        return (
+            educationMatch &&
+            courseMatch &&
+            strandMatch &&
+            yearMatch &&
+            lastNameMatch
+        );
 
     });
 
-  }
+}
 
   /* ==================================================
      Pagination
@@ -585,4 +667,52 @@ export class Member implements OnInit {
 
   }
 
+onEducationLevelChange() {
+  this.selectedCourse = '';
+  this.selectedStrand = '';
+  this.selectedYear = '';
+  this.currentPage = 1;
+}
+
+onNewEducationLevelChange() {
+  this.newCourse = '';
+  this.newStrand = '';
+  this.newYear = '';
+}
+
+onEditEducationLevelChange() {
+
+  // Save the values before switching
+  if (this.previousEducationLevel === 'College') {
+
+    this.collegeData.course = this.editingMember.course;
+    this.collegeData.year = this.editingMember.year;
+
+  } else {
+
+    this.shsData.strand = this.editingMember.strand;
+    this.shsData.year = this.editingMember.year;
+
+  }
+
+  // Restore values after switching
+  if (this.editingMember.educationLevel === 'College') {
+
+    this.editingMember.course = this.collegeData.course;
+    this.editingMember.year = this.collegeData.year;
+
+    this.editingMember.strand = '';
+
+  } else {
+
+    this.editingMember.strand = this.shsData.strand;
+    this.editingMember.year = this.shsData.year;
+
+    this.editingMember.course = '';
+
+  }
+
+  this.previousEducationLevel = this.editingMember.educationLevel;
+
+}
 }

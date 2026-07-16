@@ -11,8 +11,8 @@
         </h1>
 
         <p class="description">
-            Browse the list of COMSOC members. You can filter members by
-            course and year level.
+           Browse the list of COMSOC members. You can filter members by
+           education level, course or strand, and year/grade level.
         </p>
 
     </div>
@@ -27,10 +27,36 @@
 
         <div class="filter-group">
 
+           <label>Education Level</label>
+
+            <select [(ngModel)]="selectedEducationLevel"
+                    (ngModelChange)="onEducationLevelChange()">
+
+                <option value="">All Levels</option>
+
+                <option value="College">
+                    College
+                </option>
+
+                <option value="SHS">
+                    Senior High School
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- Course -->
+
+        <div
+            class="filter-group"
+            *ngIf="selectedEducationLevel === 'College'">
+
             <label>Course</label>
 
-            <select [(ngModel)]="selectedCourse"
-                    (ngModelChange)="currentPage = 1">
+            <select
+            [(ngModel)]="selectedCourse"
+            (ngModelChange)="currentPage = 1">
 
                 <option value="">All Courses</option>
 
@@ -46,21 +72,54 @@
 
         </div>
 
+        <!-- Strand -->
+
+        <div
+            class="filter-group"
+            *ngIf="selectedEducationLevel === 'SHS'">
+
+            <label>Strand</label>
+
+            <select [(ngModel)]="selectedStrand"
+             (ngModelChange)="currentPage = 1">
+
+                <option value="">All Strands</option>
+
+                <option
+                    *ngFor="let strand of strands"
+                    [value]="strand">
+
+                    {{ strand }}
+
+                </option>
+
+            </select>
+
+        </div>
+
         <!-- Year -->
 
         <div
             class="filter-group"
-            *ngIf="selectedCourse">
+            *ngIf="selectedEducationLevel">
 
-            <label>Year Level</label>
+            <label>
+
+                {{ selectedEducationLevel === 'SHS'
+                    ? 'Grade Level'
+                    : 'Year Level' }}
+
+            </label>
 
             <select [(ngModel)]="selectedYear"
-                    (ngModelChange)="currentPage = 1">
+             (ngModelChange)="currentPage = 1">
 
-                <option value="">All Years</option>
+                <option value="">All</option>
 
                 <option
-                    *ngFor="let year of years"
+                    *ngFor="let year of selectedEducationLevel === 'SHS'
+                        ? shsYears
+                        : collegeYears"
                     [value]="year">
 
                     {{ year }}
@@ -70,7 +129,6 @@
             </select>
 
         </div>
-
         <!-- Search -->
 
         <div class="filter-group">
@@ -80,7 +138,8 @@
             <input
                 type="text"
                 placeholder="Enter last name..."
-                [(ngModel)]="searchLastName">
+                [(ngModel)]="searchLastName"
+                 (ngModelChange)="currentPage = 1">
 
         </div>
 
@@ -117,8 +176,9 @@
                     <th>Last Name</th>
                     <th>First Name</th>
                     <th>Middle Name</th>
-                    <th>Course</th>
-                    <th>Year Level</th>
+                    <th>Education Level</th>
+                    <th>Program</th>
+                    <th>Year / Grade</th>
                     <th *ngIf="!isOfficer">Action</th>
                 </tr>
 
@@ -132,7 +192,12 @@
                     <td>{{ member.lastName }}</td>
                     <td>{{ member.firstName }}</td>
                     <td>{{ member.middleName || '-' }}</td>
-                    <td>{{ member.course }}</td>
+                    <td>{{ member.educationLevel }}</td>
+                    <td>
+                      {{ member.educationLevel === 'College'
+                          ? member.course
+                          : member.strand }}
+                    </td>
                     <td>{{ member.year }}</td>
 
                     <td
@@ -163,7 +228,7 @@
 
                     <td
                         class="empty"
-                        [attr.colspan]="isOfficer ? 6 : 7">
+                        [attr.colspan]="isOfficer ? 7 : 8">
 
                         No members found.
 
@@ -235,9 +300,30 @@
                 placeholder="Middle Name (Optional)"
                 [(ngModel)]="newMiddleName">
 
-            <select [(ngModel)]="newCourse">
+            <select [(ngModel)]="newEducationLevel"
+             (ngModelChange)="onNewEducationLevelChange()">
 
-                <option value="">Select Course</option>
+                <option value="">
+                    Select Education Level
+                </option>
+
+                <option value="College">
+                    College
+                </option>
+
+                <option value="SHS">
+                    Senior High School
+                </option>
+
+            </select>
+
+            <select
+                *ngIf="newEducationLevel === 'College'"
+                [(ngModel)]="newCourse">
+
+                <option value="">
+                    Select Course
+                </option>
 
                 <option
                     *ngFor="let course of courses"
@@ -249,12 +335,30 @@
 
             </select>
 
-            <select [(ngModel)]="newYear">
+            <select
+                *ngIf="newEducationLevel === 'SHS'"
+                [(ngModel)]="newStrand">
+
+                <option value="">Select Strand</option>
+
+                <option
+                    *ngFor="let strand of strands"
+                    [value]="strand">
+
+                    {{ strand }}
+
+                </option>
+
+            </select>
+
+            <select
+              *ngIf="newEducationLevel === 'College'"
+            [(ngModel)]="newYear">
 
                 <option value="">Select Year Level</option>
 
                 <option
-                    *ngFor="let year of years"
+                    *ngFor="let year of collegeYears"
                     [value]="year">
 
                     {{ year }}
@@ -262,6 +366,24 @@
                 </option>
 
             </select>
+
+            <select
+              *ngIf="newEducationLevel === 'SHS'"
+              [(ngModel)]="newYear">
+
+              <option value="">
+                  Select Grade Level
+              </option>
+
+              <option
+                  *ngFor="let year of shsYears"
+                  [value]="year">
+
+                  {{ year }}
+
+              </option>
+
+          </select>
 
             <div class="modal-buttons">
 
@@ -314,7 +436,28 @@
                 placeholder="Middle Name (Optional)"
                 [(ngModel)]="editingMember.middleName">
 
-            <select [(ngModel)]="editingMember.course">
+            <select [(ngModel)]="editingMember.educationLevel"
+             (ngModelChange)="onEditEducationLevelChange()">
+
+                <option value="College">
+                    College
+                </option>
+
+                <option value="SHS">
+                    SHS
+                </option>
+
+            </select>
+
+            <select
+                *ngIf="editingMember.educationLevel === 'College'"
+                [(ngModel)]="editingMember.course">
+
+                <option
+                    *ngIf="!editingMember.course"
+                    value="">
+                    Select Course
+                </option>
 
                 <option
                     *ngFor="let course of courses"
@@ -326,10 +469,59 @@
 
             </select>
 
-            <select [(ngModel)]="editingMember.year">
+            <select
+                *ngIf="editingMember.educationLevel === 'SHS'"
+                [(ngModel)]="editingMember.strand">
+
+
+              <option
+                  *ngIf="!editingMember.strand"
+                  value="">
+                  Select Strand
+              </option>
 
                 <option
-                    *ngFor="let year of years"
+                    *ngFor="let strand of strands"
+                    [value]="strand">
+
+                    {{ strand }}
+
+                </option>
+
+            </select>
+
+            <select
+             *ngIf="editingMember.educationLevel === 'College'"
+            [(ngModel)]="editingMember.year">
+
+                <option
+                    *ngIf="!editingMember.year"
+                    value="">
+                    Select Year Level
+                </option>
+
+                <option
+                    *ngFor="let year of collegeYears"
+                    [value]="year">
+
+                    {{ year }}
+
+                </option>
+
+            </select>
+
+            <select
+                *ngIf="editingMember.educationLevel === 'SHS'"
+                [(ngModel)]="editingMember.year">
+
+                    <option
+                    *ngIf="!editingMember.year"
+                    value="">
+                    Select Grade Level
+                </option>
+
+                <option
+                    *ngFor="let year of shsYears"
                     [value]="year">
 
                     {{ year }}
