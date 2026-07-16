@@ -48,6 +48,8 @@ export class Layout implements OnInit {
 
   user:any = null;
 
+  sidebarOpen = false;
+
 
 
   ngOnInit(){
@@ -151,6 +153,19 @@ export class Layout implements OnInit {
 
     });
 
+
+  }
+
+  toggleSidebar(){
+
+    this.sidebarOpen = !this.sidebarOpen;
+
+  }
+
+
+  closeSidebar(){
+
+      this.sidebarOpen = false;
 
   }
 

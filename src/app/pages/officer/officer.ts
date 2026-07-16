@@ -122,8 +122,6 @@ export class Officer implements OnInit {
 
     'Public Information Officer',
 
-    'Adviser'
-
   ];
 
 

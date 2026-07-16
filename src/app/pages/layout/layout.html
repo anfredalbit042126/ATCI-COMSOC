@@ -4,104 +4,103 @@
          Sidebar
     ================================================== -->
 
-    <aside class="sidebar">
+    <!-- Mobile Burger Button -->
+    <button
+        class="burger"
+        (click)="toggleSidebar()">
 
-        <!-- Logo -->
+        ☰
 
-        <a
-            class="logo"
-            routerLink="/">
+    </button>
 
-            <img
-                src="/images/comsoc-logo.png"
-                alt="Com Soc">
+    <aside
+    class="sidebar"
+    [class.open]="sidebarOpen">
 
-        </a>
+    <!-- Logo -->
+    <a
+        class="logo"
+        routerLink="/"
+        (click)="closeSidebar()">
 
+        <img
+            src="/images/comsoc-logo.png"
+            alt="Com Soc">
 
-        <!-- Navigation -->
-
-        <ul class="nav-links">
-
-
-            <!-- Dashboard -->
-
-            <li>
-
-                <a
-                    routerLink="/"
-                    routerLinkActive="active"
-                    [routerLinkActiveOptions]="{ exact: true }">
-
-                    🏠 Dashboard
-
-                </a>
-
-            </li>
+    </a>
 
 
-            <!-- Members (Everyone) -->
+    <ul class="nav-links">
 
-            <li>
+        <li>
+            <a
+                routerLink="/"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact:true }"
+                (click)="closeSidebar()">
 
-                <a
-                    routerLink="/member"
-                    routerLinkActive="active">
+                🏠 Dashboard
 
-                    👥 Members
-
-                </a>
-
-            </li>
-
-
-            <!-- Officers (Admin Only) -->
-
-            <li *ngIf="isAdmin()">
-
-                <a
-                    routerLink="/officer"
-                    routerLinkActive="active">
-
-                    👮 Officers
-
-                </a>
-
-            </li>
-
-            <!-- Profile -->
-
-            <li>
-
-                <a
-                    routerLink="/profile"
-                    routerLinkActive="active">
-
-                    👤 Profile
-
-                </a>
-
-            </li>
+            </a>
+        </li>
 
 
-            <!-- Logout -->
+        <li>
+            <a
+                routerLink="/member"
+                routerLinkActive="active"
+                (click)="closeSidebar()">
 
-            <li>
+                👥 Members
 
-                <a
-                    href="#"
-                    (click)="logout(); $event.preventDefault()">
-
-                    🚪 Logout
-
-                </a>
-
-            </li>
+            </a>
+        </li>
 
 
-        </ul>
+        <li *ngIf="isAdmin()">
 
-    </aside>
+            <a
+                routerLink="/officer"
+                routerLinkActive="active"
+                (click)="closeSidebar()">
+
+                👮 Officers
+
+            </a>
+
+        </li>
+
+
+        <li>
+
+            <a
+                routerLink="/profile"
+                routerLinkActive="active"
+                (click)="closeSidebar()">
+
+                👤 Profile
+
+            </a>
+
+        </li>
+
+
+        <li>
+
+            <a
+                href="#"
+                (click)="logout(); $event.preventDefault()">
+
+                🚪 Logout
+
+            </a>
+
+        </li>
+
+
+    </ul>
+
+</aside>
 
 
     <!-- ==================================================
