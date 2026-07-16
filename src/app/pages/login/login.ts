@@ -148,7 +148,9 @@ export class Login {
 
           lastName:admin.lastName,
 
-          role:admin.role
+          role:admin.role,
+
+          position:admin.position
 
         });
 

@@ -24,7 +24,7 @@
 
             <p>
 
-                {{user.role}}
+                {{user.role}} - {{user.position}}
 
             </p>
 
@@ -100,57 +100,7 @@
             </div>
 
 
-
-
-
-            <div class="info-item">
-
-
-                <label>
-
-                    Role
-
-                </label>
-
-
-                <span>
-
-                    {{user.role}}
-
-                </span>
-
-
-            </div>
-
-            <div
-
-            class="info-item"
-
-            *ngIf="user.position">
-
-
-                <label>
-
-                    Position
-
-                </label>
-
-
-                <span>
-
-                    {{user.position}}
-
-                </span>
-
-
-            </div>
-
-
-
         </div>
-
-
-
 
         <button
 
