@@ -1,6 +1,7 @@
 <section class="officers">
 
     <!-- Header -->
+
     <div class="officers-header">
 
         <h1>
@@ -70,12 +71,18 @@
 
     <!-- Search -->
 
-    <div class="search-box">
+    <div class="filters">
 
-        <input
-            type="text"
-            placeholder="Search officer..."
-            [(ngModel)]="search">
+        <div class="filter-group">
+
+            <label>Search Last Name</label>
+
+            <input
+                type="text"
+                placeholder="Enter last name..."
+                [(ngModel)]="search">
+
+        </div>
 
     </div>
 
@@ -99,8 +106,7 @@
 
             <tbody>
 
-                <tr
-                    *ngFor="let officer of filteredOfficers(); let i = index">
+                <tr *ngFor="let officer of filteredOfficers(); let i = index">
 
                     <td>{{ i + 1 }}</td>
                     <td>{{ officer.lastName }}</td>
@@ -112,12 +118,8 @@
 
                 <tr *ngIf="filteredOfficers().length === 0">
 
-                    <td
-                        colspan="5"
-                        class="empty">
-
+                    <td colspan="5" class="empty">
                         No officers found.
-
                     </td>
 
                 </tr>

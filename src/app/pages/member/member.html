@@ -110,6 +110,20 @@
 
         </div>
 
+
+        <!-- Search by Last Name -->
+
+        <div class="filter-group">
+
+            <label>Search Last Name</label>
+
+            <input
+                type="text"
+                placeholder="Enter last name..."
+                [(ngModel)]="searchLastName">
+
+        </div>
+
     </div>
 
     <!-- Table -->
@@ -127,6 +141,7 @@
                     <th>Middle Name</th>
                     <th>Course</th>
                     <th>Year Level</th>
+                    <th>Action</th>
                 </tr>
 
             </thead>
@@ -142,6 +157,27 @@
                     <td>{{ member.middleName || '-' }}</td>
                     <td>{{ member.course }}</td>
                     <td>{{ member.year }}</td>
+
+                    <td class="actions">
+
+                      <button
+                          class="btn-edit"
+                          (click)="openEditModal(member)">
+
+                          Update
+
+                      </button>
+
+                      <button
+                          class="btn-delete"
+                          (click)="deleteMember(member)">
+
+                          Delete
+
+                      </button>
+
+                     </td>
+
 
                 </tr>
 
@@ -162,5 +198,78 @@
         </table>
 
     </div>
+
+            <div
+        class="modal"
+        *ngIf="showEditModal">
+
+        <div class="modal-content">
+
+        <h2>Update Member</h2>
+
+        <input
+        type="text"
+        placeholder="Last Name"
+        [(ngModel)]="editingMember.lastName">
+
+        <input
+        type="text"
+        placeholder="First Name"
+        [(ngModel)]="editingMember.firstName">
+
+        <input
+        type="text"
+        placeholder="Middle Name"
+        [(ngModel)]="editingMember.middleName">
+
+        <select
+        [(ngModel)]="editingMember.course">
+
+        <option
+        *ngFor="let course of courses"
+        [value]="course">
+
+        {{course}}
+
+        </option>
+
+        </select>
+
+        <select
+        [(ngModel)]="editingMember.year">
+
+        <option
+        *ngFor="let year of years"
+        [value]="year">
+
+        {{year}}
+
+        </option>
+
+        </select>
+
+        <div class="modal-buttons">
+
+        <button
+        class="btn-edit"
+        (click)="updateMember()">
+
+        Save
+
+        </button>
+
+        <button
+        class="btn-cancel"
+        (click)="closeEditModal()">
+
+        Cancel
+
+        </button>
+
+        </div>
+
+        </div>
+
+        </div>
 
 </section>

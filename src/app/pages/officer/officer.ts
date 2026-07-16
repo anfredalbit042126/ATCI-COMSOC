@@ -1,13 +1,17 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 import {
   collection,
   addDoc,
   getDocs,
   query,
-  orderBy
+  orderBy,
+  updateDoc,
+  deleteDoc,
+  doc
 } from 'firebase/firestore';
 
 import { db } from './../../firebase';
@@ -43,21 +47,14 @@ export class Officer implements OnInit {
     'President',
     'Vice President',
     'Secretary',
-    'Assistant Secretary',
     'Treasurer',
-    'Assistant Treasurer',
     'Auditor',
-    'Public Information Officer',
     'Business Manager',
-    '1st Year Representative',
-    '2nd Year Representative',
-    '3rd Year Representative',
-    '4th Year Representative'
+    'Public Information Officer',
   ];
 
 
   officers: any[] = [];
-
 
   async ngOnInit() {
     await this.loadOfficers();
@@ -103,36 +100,51 @@ export class Officer implements OnInit {
   if (
     this.newLastName.trim() === '' ||
     this.newFirstName.trim() === '' ||
-    this.newPosition === ''  ||
+    this.newPosition === '' ||
     this.newPin.length !== 6
   ) {
 
-    alert('Please complete all required fields.');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Incomplete Information',
+      text: 'Please complete all required fields and enter a valid 6-digit PIN.',
+      confirmButtonColor: '#2563EB'
+    });
+
     return;
 
   }
 
+  const result = await Swal.fire({
+    title: 'Add Officer?',
+    text: 'Are you sure you want to add this officer?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Add',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#2563EB',
+    cancelButtonColor: '#64748B'
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
 
   try {
 
     await addDoc(collection(db, 'officers'), {
 
       lastName: this.newLastName.trim(),
-
       firstName: this.newFirstName.trim(),
-
       middleName: this.newMiddleName.trim(),
 
       role: this.role,
-
-      pin:this.newPin,
-
+      pin: this.newPin,
       position: this.newPosition,
 
       createdAt: new Date()
 
     });
-
 
     this.newLastName = '';
     this.newFirstName = '';
@@ -142,12 +154,23 @@ export class Officer implements OnInit {
 
     await this.loadOfficers();
 
+    Swal.fire({
+      icon: 'success',
+      title: 'Officer Added!',
+      text: 'The officer has been added successfully.',
+      confirmButtonColor: '#2563EB'
+    });
 
-  } catch(error) {
+  } catch (error) {
 
     console.error(error);
 
-    alert('Failed to add officer.');
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed',
+      text: 'Unable to add the officer.',
+      confirmButtonColor: '#2563EB'
+    });
 
   }
 
@@ -158,14 +181,9 @@ export class Officer implements OnInit {
 
   return this.officers.filter(officer => {
 
-    const fullname =
-      `${officer.lastName} ${officer.firstName} ${officer.middleName}`
-      .toLowerCase();
-
-
-    return fullname.includes(
-      this.search.toLowerCase()
-    );
+    return officer.lastName
+      .toLowerCase()
+      .includes(this.search.toLowerCase().trim());
 
   });
 

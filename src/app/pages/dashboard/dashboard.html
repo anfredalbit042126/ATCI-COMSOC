@@ -1,6 +1,8 @@
 <section class="dashboard">
 
-    <!-- Header -->
+    <!-- ==========================
+         Header
+    =========================== -->
 
     <div class="dashboard-header">
 
@@ -8,113 +10,104 @@
 
         <p>
             Welcome to the Computer Society Management System.
+            Monitor your organization's members and officers from one place.
         </p>
 
     </div>
 
-    <!-- Statistics -->
+    <!-- ==========================
+         Statistics
+    =========================== -->
 
     <div class="stats">
 
         <div class="card">
+
             <h3>Total Members</h3>
-            <h2>245</h2>
+
+            <h2>{{ totalMembers }}</h2>
+
         </div>
 
         <div class="card">
-            <h3>Officers</h3>
-            <h2>15</h2>
+
+            <h3>Total Officers</h3>
+
+            <h2>{{ totalOfficers }}</h2>
+
         </div>
 
         <div class="card">
-            <h3>Upcoming Events</h3>
-            <h2>4</h2>
+
+            <h3>Courses</h3>
+
+            <h2>{{ courses }}</h2>
+
         </div>
 
         <div class="card">
-            <h3>Announcements</h3>
-            <h2>7</h2>
+
+            <h3>Year Levels</h3>
+
+            <h2>{{ yearLevels }}</h2>
+
         </div>
 
     </div>
 
-    <!-- Dashboard Grid -->
+    <!-- ==========================
+         Dashboard Overview
+    =========================== -->
 
     <div class="dashboard-grid">
 
-        <!-- Announcements -->
+        <!-- Latest Member -->
 
         <div class="panel">
 
-            <h2>Recent Announcements</h2>
+            <h2>Latest Member</h2>
 
-            <div class="announcement">
+            <div class="info-box">
 
-                <h4>Programming Workshop</h4>
+                <div class="info-icon">
+                    👤
+                </div>
 
-                <p>July 18, 2026 • Computer Laboratory 2</p>
+                <div>
 
-            </div>
+                    <h3>{{ latestMember || 'No member available' }}</h3>
 
-            <div class="announcement">
+                    <p>
+                        Most recently added organization member.
+                    </p>
 
-                <h4>General Assembly</h4>
-
-                <p>July 25, 2026 • AVR Hall</p>
-
-            </div>
-
-            <div class="announcement">
-
-                <h4>Membership Registration</h4>
-
-                <p>
-                    Registration is now open for all BSIT students.
-                </p>
+                </div>
 
             </div>
 
         </div>
 
-        <!-- Events -->
+        <!-- Latest Officer -->
 
         <div class="panel">
 
-            <h2>Upcoming Events</h2>
+            <h2>Latest Officer</h2>
 
-            <div class="table-container">
+            <div class="info-box">
 
-                <table>
+                <div class="info-icon">
+                    ⭐
+                </div>
 
-                    <thead>
+                <div>
 
-                        <tr>
-                            <th>Event</th>
-                            <th>Date</th>
-                        </tr>
+                    <h3>{{ latestOfficer || 'No officer available' }}</h3>
 
-                    </thead>
+                    <p>
+                        Most recently added organization officer.
+                    </p>
 
-                    <tbody>
-
-                        <tr>
-                            <td>Web Development Seminar</td>
-                            <td>July 20</td>
-                        </tr>
-
-                        <tr>
-                            <td>Hackathon</td>
-                            <td>August 2</td>
-                        </tr>
-
-                        <tr>
-                            <td>Leadership Training</td>
-                            <td>August 12</td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                </div>
 
             </div>
 
@@ -122,7 +115,59 @@
 
     </div>
 
-    <!-- Quick Actions -->
+    <!-- ==========================
+         System Summary
+    =========================== -->
+
+    <div class="panel summary">
+
+        <h2>System Summary</h2>
+
+        <table>
+
+            <tbody>
+
+                <tr>
+
+                    <td>Total Registered Members</td>
+
+                    <td>{{ totalMembers }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Total Officers</td>
+
+                    <td>{{ totalOfficers }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Available Courses</td>
+
+                    <td>{{ courses }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Year Levels</td>
+
+                    <td>{{ yearLevels }}</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- ==========================
+         Quick Actions
+    =========================== -->
 
     <div class="quick-actions">
 
@@ -141,32 +186,12 @@
             </a>
 
             <a
-                routerLink="/events"
+                routerLink="/officer"
                 class="action">
 
-                <div class="icon">📅</div>
+                <div class="icon">🛡️</div>
 
-                <span>Events</span>
-
-            </a>
-
-            <a
-                routerLink="/announcements"
-                class="action">
-
-                <div class="icon">📢</div>
-
-                <span>Announcements</span>
-
-            </a>
-
-            <a
-                routerLink="/contact"
-                class="action">
-
-                <div class="icon">✉️</div>
-
-                <span>Messages</span>
+                <span>Officers</span>
 
             </a>
 
